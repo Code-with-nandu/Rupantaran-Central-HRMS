@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import ScrollProgressBar from './components/ScrollProgressBar';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -26,9 +26,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import UserPages from './components/UserPages';
 import AuthUtilityBar from './components/AuthUtilityBar';
 import HealthcareKnowledge from './components/HealthcareKnowledge';
-import SevakAttendancePage from './components/SevakAttendancePage';
-import SevakAttendanceDashboardPage from './components/SevakAttendanceDashboardPage';
-import SevakManualAttendancePage from './components/SevakManualAttendancePage';
 import SevakRegistrationPortalPage from './components/SevakRegistrationPortalPage';
 import SevakSelfRegistrationPage from './components/SevakSelfRegistrationPage';
 import SevakDashboard from './components/SevakDashboard';
@@ -38,12 +35,24 @@ import RoleSelectionPage from './components/RoleSelectionPage';
 import { STUDENTS_DATA } from './data/mockData';
 import { Student } from './types';
 
+const SevakAttendancePage = lazy(() => import('./components/SevakAttendancePage'));
+const SevakAttendanceWorkspacePage = lazy(() => import('./components/SevakAttendanceWorkspacePage'));
+const SevakAttendanceDashboardPage = lazy(() => import('./components/SevakAttendanceDashboardPage'));
+const SevakManualAttendancePage = lazy(() => import('./components/SevakManualAttendancePage'));
+
 export default function App() {
   const pathname = window.location.pathname.replace(/\/$/, '') || '/sevak-dashboard';
+  const [, setRouteVersion] = useState(0);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [joinModalOpen, setJoinModalOpen] = useState(false);
   const [joinRole, setJoinRole] = useState<string>('mentor');
   const [joinAmount, setJoinAmount] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    const updateHashRoute = () => setRouteVersion((version) => version + 1);
+    window.addEventListener('hashchange', updateHashRoute);
+    return () => window.removeEventListener('hashchange', updateHashRoute);
+  }, []);
 
   const handleOpenJoinModal = (role = 'mentor', prefillAmount?: number) => {
     setJoinRole(role);
@@ -81,11 +90,12 @@ export default function App() {
     return <SevakDashboard pathname={pathname} />;
   }
 
-  const protectedPaths = ['/dashboard', '/role-redirect', '/sevak/panel', '/group-leader', '/admin', '/register-problem', '/my-problems', '/profile', '/notifications', '/sevak-dashboard/leave', '/sevak-dashboard/medical', '/sevak-dashboard/attendance', '/sevak-attendance', '/sevak-attendance/manual'];
+  const protectedPaths = ['/dashboard', '/role-redirect', '/sevak/panel', '/group-leader', '/admin', '/register-problem', '/my-problems', '/profile', '/notifications', '/sevak-dashboard/leave', '/sevak-dashboard/medical', '/sevak-dashboard/attendance', '/sevak-attendance', '/sevak-attendance/reports', '/sevak-attendance/manual', '/sevak-attendance/profiles', '/sevak-attendance/administration'];
   if (protectedPaths.includes(pathname)) {
     return (
       <>
         {!pathname.startsWith('/sevak-dashboard') && <AuthUtilityBar />}
+        <Suspense fallback={<div className="min-h-screen bg-slate-50 px-6 py-16 text-center text-sm text-slate-500">Loading attendance workspace…</div>}>
         <ProtectedRoute>
           {(session) => pathname === '/role-redirect'
             ? <RoleDashboardGate session={session} requestedRole="landing" />
@@ -98,7 +108,13 @@ export default function App() {
               : pathname === '/sevak-dashboard/attendance'
                 ? <RoleDashboardGate session={session} requestedRole="sevak"><SevakAttendanceDashboardPage session={session} /></RoleDashboardGate>
               : pathname === '/sevak-attendance'
-                ? <RoleDashboardGate session={session} requestedRole="attendance"><SevakAttendancePage shellSession={session} /></RoleDashboardGate>
+                ? <RoleDashboardGate session={session} requestedRole="attendance">{window.location.hash === '#attendance-heading' ? <SevakManualAttendancePage shellSession={session} /> : window.location.hash === '#monthly-attendance-heading' ? <SevakAttendanceDashboardPage session={session} workspace /> : <SevakAttendanceWorkspacePage session={session} />}</RoleDashboardGate>
+              : pathname === '/sevak-attendance/reports'
+                ? <RoleDashboardGate session={session} requestedRole="attendance"><SevakAttendanceDashboardPage session={session} workspace /></RoleDashboardGate>
+              : pathname === '/sevak-attendance/profiles'
+                ? <RoleDashboardGate session={session} requestedRole="attendance"><SevakAttendancePage shellSession={session} view="profiles" /></RoleDashboardGate>
+              : pathname === '/sevak-attendance/administration'
+                ? <RoleDashboardGate session={session} requestedRole="admin"><SevakAttendancePage shellSession={session} view="administration" /></RoleDashboardGate>
                 : pathname.startsWith('/sevak-dashboard')
                   ? <RoleDashboardGate session={session} requestedRole="sevak"><SevakDashboard session={session} pathname={pathname} /></RoleDashboardGate>
               : pathname === '/dashboard'
@@ -107,6 +123,7 @@ export default function App() {
                 ? <SevakManualAttendancePage shellSession={session} />
                 : <UserPages pathname={pathname} session={session} />}
         </ProtectedRoute>
+        </Suspense>
       </>
     );
   }

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Session } from '@supabase/supabase-js';
-import { Activity, ArrowUpRight, CalendarCheck2, ClipboardList, Download, HeartHandshake, LayoutDashboard, Menu, Settings, ShieldCheck, Users, UsersRound, X, UserCheck, UserX, Clock3 } from 'lucide-react';
 import { supabase } from '../supabase';
 import SevakLayout from './SevakLayout';
 import { isLegacySamplePhotoPath, resolveSevakProfilePhotoUrl } from '../utils/sevakProfilePhoto.mjs';
@@ -153,7 +152,7 @@ function rangeLabel(start: string, end: string) {
 
 function ProfileField({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-[#e8e1d1] bg-white px-4 py-3">
+    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
       <p className="text-xs font-medium uppercase tracking-[0.16em] text-[#768187]">{label}</p>
       <p className="mt-2 break-words text-sm text-[#344b51]">{value || '—'}</p>
     </div>
@@ -170,49 +169,6 @@ function errorMessage(error: { message: string; code?: string }) {
 }
 
 type AdminManagementTab = 'sevaks' | 'leaders' | 'common';
-
-function AttendanceAdminSidebar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const links = [
-    { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-    { label: 'Sevak Profiles', href: '#profile-heading', icon: Users },
-    { label: 'Attendance', href: '#attendance-heading', icon: CalendarCheck2, active: true },
-    { label: 'Departments', href: '#department-management-heading', icon: ClipboardList },
-    { label: 'Team Management', href: '#attendance-admin-tools-heading', icon: UsersRound },
-    { label: 'Reports', href: '#monthly-attendance-heading', icon: Activity },
-  ];
-
-  return (
-    <aside className="bg-[#0b0b0e] text-white md:sticky md:top-0 md:flex md:h-[calc(100vh-138px)] md:flex-col md:overflow-y-auto md:rounded-r-2xl">
-      <div className="flex items-center justify-between px-5 py-5 md:px-6">
-        <a href="/admin" className="flex items-center gap-2.5" aria-label="BigBro Admin Dashboard">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-fuchsia-500 to-violet-600 text-sm font-black">B</span>
-          <span><span className="block text-sm font-bold tracking-wide">BigBro</span><span className="mt-0.5 block text-[10px] text-neutral-500">ROOPANTARAN</span></span>
-        </a>
-        <button type="button" onClick={() => setMenuOpen((open) => !open)} aria-label={menuOpen ? 'Close attendance navigation' : 'Open attendance navigation'} aria-expanded={menuOpen} className="rounded-md p-2 text-neutral-400 hover:bg-white/10 md:hidden">
-          {menuOpen ? <X size={19} /> : <Menu size={19} />}
-        </button>
-      </div>
-      <nav aria-label="Admin attendance navigation" className={`${menuOpen ? 'grid' : 'hidden'} grid-cols-2 gap-1 px-3 pb-4 md:grid md:grid-cols-1 md:px-3`}>
-        {links.map(({ label, href, icon: Icon, active }) => (
-          <a key={label} href={href} onClick={() => setMenuOpen(false)} aria-current={active ? 'page' : undefined} className={`flex min-h-10 items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium transition ${active ? 'bg-gradient-to-r from-violet-600 to-fuchsia-400 text-white shadow-lg shadow-fuchsia-900/20' : 'text-neutral-400 hover:bg-white/10 hover:text-white'}`}>
-            <Icon size={16} className="shrink-0" aria-hidden="true" /><span>{label}</span>
-          </a>
-        ))}
-      </nav>
-      <div className="hidden px-3 pb-3 md:mt-auto md:block">
-        <div className="rounded-2xl bg-gradient-to-br from-violet-700 to-fuchsia-500 p-4 text-center">
-          <span className="mx-auto grid h-10 w-10 -translate-y-1 place-items-center rounded-full bg-white text-violet-600 shadow-lg"><HeartHandshake size={20} /></span>
-          <p className="text-xs font-semibold">Attendance workspace</p>
-          <p className="mt-1 text-[10px] leading-4 text-white/75">Review Sevak records and manage team previews.</p>
-          <a href="/sevak-attendance/manual" className="mt-3 inline-flex min-h-9 w-full items-center justify-center gap-1 rounded-full bg-white px-3 py-2 text-[10px] font-semibold text-violet-700 hover:bg-violet-50">Manual Attendance <ArrowUpRight size={13} /></a>
-        </div>
-        <a href="#department-management-heading" className="mt-3 flex min-h-10 items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium text-neutral-400 hover:bg-white/10 hover:text-white"><Settings size={16} aria-hidden="true" />Settings</a>
-        <p className="px-3 pt-2 text-[10px] text-neutral-600"><ShieldCheck size={12} className="mr-1 inline" />Admin access</p>
-      </div>
-    </aside>
-  );
-}
 
 function AttendanceAdminPreview({ profiles, departments, groupLeaderAssignments }: {
   profiles: SevakProfile[];
@@ -275,10 +231,10 @@ function AttendanceAdminPreview({ profiles, departments, groupLeaderAssignments 
     setCommonMembers((current) => current.map((id, index) => index === slot ? profileId : id));
   };
 
-  const previewOnly = <p className="mt-4 rounded-lg border border-dashed border-[#cbb782] bg-[#fbfaf7] px-3 py-2 text-xs leading-5 text-[#78591d]">UI preview only — changes are not saved.</p>;
+  const previewOnly = <p className="mt-4 rounded-lg border border-dashed border-[#cbb782] bg-slate-50 px-3 py-2 text-xs leading-5 text-[#78591d]">UI preview only — changes are not saved.</p>;
 
   return (
-    <section aria-labelledby="attendance-admin-tools-heading" className="mt-8 rounded-2xl border border-[#e8e1d1] bg-white p-4 shadow-sm sm:p-6">
+    <section aria-labelledby="attendance-admin-tools-heading" className="mt-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
       <div className="mb-4">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#a57d31]">Administrator tools</p>
         <h2 id="attendance-admin-tools-heading" className="mt-2 text-xl font-semibold text-[#263238]">Attendance team management</h2>
@@ -289,7 +245,7 @@ function AttendanceAdminPreview({ profiles, departments, groupLeaderAssignments 
           ['leaders', 'Manage Group Leaders'],
           ['common', 'Manage Common Attendance Team'],
         ] as const).map(([tab, label]) => (
-          <button key={tab} type="button" role="tab" aria-selected={activeTab === tab} onClick={() => setActiveTab(tab)} className={`min-h-11 rounded-xl border px-3 py-2 text-sm font-semibold transition ${activeTab === tab ? 'border-[#bd8d36] bg-[#f4efe3] text-[#78591d]' : 'border-[#e8e1d1] bg-white text-[#485a61] hover:bg-[#fbfaf7]'}`}>
+          <button key={tab} type="button" role="tab" aria-selected={activeTab === tab} onClick={() => setActiveTab(tab)} className={`min-h-11 rounded-xl border px-3 py-2 text-sm font-semibold transition ${activeTab === tab ? 'border-[#bd8d36] bg-[#f4efe3] text-[#78591d]' : 'border-slate-200 bg-white text-[#485a61] hover:bg-slate-50'}`}>
             {label}
           </button>
         ))}
@@ -301,25 +257,25 @@ function AttendanceAdminPreview({ profiles, departments, groupLeaderAssignments 
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(260px,0.8fr)]">
               <div>
                 <label className="block text-xs font-medium text-[#66777d]">Search Sevaks
-                  <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Name, Sevak ID, mobile, or department" className="mt-1 min-h-11 w-full rounded-lg border border-[#e8e1d1] bg-[#f8f7f3] px-3 py-2 text-sm text-[#263238] placeholder:text-[#9aa2a3]" />
+                  <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Name, Sevak ID, mobile, or department" className="mt-1 min-h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-[#263238] placeholder:text-[#9aa2a3]" />
                 </label>
                 <ul aria-label="Sevak list" className="mt-3 space-y-2">
                   {matchingProfiles.map((profile) => (
                     <li key={profile.id}>
-                      <button type="button" onClick={() => { setSelectedSevakId(profile.id); setDepartmentDraft(profile.department_id); }} className={`flex min-h-[68px] w-full items-center gap-3 rounded-xl border p-2.5 text-left transition ${selectedSevak?.id === profile.id ? 'border-[#bd8d36] bg-[#fbfaf7]' : 'border-[#e8e1d1] bg-white hover:bg-[#fbfaf7]'}`}>
+                      <button type="button" onClick={() => { setSelectedSevakId(profile.id); setDepartmentDraft(profile.department_id); }} className={`flex min-h-[68px] w-full items-center gap-3 rounded-xl border p-2.5 text-left transition ${selectedSevak?.id === profile.id ? 'border-[#bd8d36] bg-slate-50' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
                         {photoUrls[profile.id] ? <img src={photoUrls[profile.id]} alt={`${profile.name} profile`} className="h-11 w-11 rounded-full object-cover" /> : <span aria-hidden="true" className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#f4efe3] text-sm font-semibold text-[#78591d]">{profile.name.trim().charAt(0).toUpperCase() || 'S'}</span>}
                         <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold text-[#344b51]">{profile.name}</span><span className="mt-1 block truncate text-xs text-[#768187]">{profile.sevak_id} · {profile.department || 'No department'}</span></span>
                       </button>
                     </li>
                   ))}
-                  {matchingProfiles.length === 0 && <li className="rounded-xl border border-dashed border-[#e8e1d1] p-4 text-sm text-[#768187]">No Sevaks match this search.</li>}
+                  {matchingProfiles.length === 0 && <li className="rounded-xl border border-dashed border-slate-200 p-4 text-sm text-[#768187]">No Sevaks match this search.</li>}
                 </ul>
               </div>
-              <div className="h-fit rounded-xl border border-[#e8e1d1] bg-[#fbfaf7] p-4">
+              <div className="h-fit rounded-xl border border-slate-200 bg-slate-50 p-4">
                 <h3 className="font-semibold text-[#344b51]">Department assignment</h3>
                 <p className="mt-1 text-sm text-[#66777d]">{selectedSevak ? `${selectedSevak.name} · Current: ${selectedSevak.department || 'Unassigned'}` : 'Select a Sevak from the list.'}</p>
                 <label className="mt-4 block text-xs font-medium text-[#66777d]">Department
-                  <select disabled={!selectedSevak} value={departmentDraft || selectedSevak?.department_id || ''} onChange={(event) => setDepartmentDraft(event.target.value)} className="mt-1 min-h-11 w-full rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238] disabled:opacity-60">
+                  <select disabled={!selectedSevak} value={departmentDraft || selectedSevak?.department_id || ''} onChange={(event) => setDepartmentDraft(event.target.value)} className="mt-1 min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238] disabled:opacity-60">
                     <option value="">Choose department</option>
                     {activeDepartments.map((department) => <option key={department.id} value={department.id}>{department.name}</option>)}
                   </select>
@@ -333,15 +289,15 @@ function AttendanceAdminPreview({ profiles, departments, groupLeaderAssignments 
 
         {activeTab === 'leaders' && (
           <div className="grid gap-4 lg:grid-cols-2">
-            <div className="rounded-xl border border-[#e8e1d1] p-4">
+            <div className="rounded-xl border border-slate-200 p-4">
               <h3 className="font-semibold text-[#344b51]">Department Group Leader</h3>
               <label className="mt-3 block text-xs font-medium text-[#66777d]">Department
-                <select value={leaderDepartmentId} onChange={(event) => { setLeaderDepartmentId(event.target.value); setLeaderDraft(''); }} className="mt-1 min-h-11 w-full rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
+                <select value={leaderDepartmentId} onChange={(event) => { setLeaderDepartmentId(event.target.value); setLeaderDraft(''); }} className="mt-1 min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238]">
                   <option value="">Choose department</option>
                   {activeDepartments.map((department) => <option key={department.id} value={department.id}>{department.name}</option>)}
                 </select>
               </label>
-              <div className="mt-3 rounded-lg bg-[#f8f7f3] p-3 text-sm text-[#485a61]">
+              <div className="mt-3 rounded-lg bg-slate-50 p-3 text-sm text-[#485a61]">
                 <span className="block text-xs font-semibold uppercase tracking-wide text-[#768187]">Currently assigned</span>
                 {leaderAssignmentsForDepartment.length ? leaderAssignmentsForDepartment.map((assignment) => {
                   const linkedProfile = profiles.find((profile) => linkedAuthUsers[profile.id] === assignment.user_id);
@@ -349,7 +305,7 @@ function AttendanceAdminPreview({ profiles, departments, groupLeaderAssignments 
                 }) : <span className="mt-1 block">{leaderDepartmentId ? 'No current Group Leader shown for this department.' : 'Choose a department to preview its assignment.'}</span>}
               </div>
               <label className="mt-3 block text-xs font-medium text-[#66777d]">Select Group Leader
-                <select value={leaderDraft} onChange={(event) => setLeaderDraft(event.target.value)} className="mt-1 min-h-11 w-full rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
+                <select value={leaderDraft} onChange={(event) => setLeaderDraft(event.target.value)} className="mt-1 min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238]">
                   <option value="">Choose a linked user</option>
                   {linkedUsers.map((profile) => <option key={profile.id} value={linkedAuthUsers[profile.id]}>{profile.name} · {profile.sevak_id}</option>)}
                 </select>
@@ -370,9 +326,9 @@ function AttendanceAdminPreview({ profiles, departments, groupLeaderAssignments 
               {commonMembers.map((memberId, slot) => {
                 const selectedMember = profiles.find((profile) => profile.id === memberId);
                 const roleLabel = slot === managerSlot ? 'Common Attendance Manager' : 'Common Attendance Member';
-                return <div key={slot} className="rounded-xl border border-[#e8e1d1] bg-[#fbfaf7] p-3">
+                return <div key={slot} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                   <p className="text-xs font-semibold uppercase tracking-wide text-[#768187]">{roleLabel}</p>
-                  <select aria-label={`Common attendance member ${slot + 1}`} value={memberId} onChange={(event) => chooseCommonMember(slot, event.target.value)} className="mt-2 min-h-11 w-full rounded-lg border border-[#e8e1d1] bg-white px-2 py-2 text-sm text-[#263238]">
+                  <select aria-label={`Common attendance member ${slot + 1}`} value={memberId} onChange={(event) => chooseCommonMember(slot, event.target.value)} className="mt-2 min-h-11 w-full rounded-lg border border-slate-200 bg-white px-2 py-2 text-sm text-[#263238]">
                     <option value="">Select member {slot + 1}</option>
                     {profiles.filter((profile) => profile.id === memberId || !commonMembers.includes(profile.id)).map((profile) => <option key={profile.id} value={profile.id}>{profile.name} · {profile.sevak_id}</option>)}
                   </select>
@@ -382,7 +338,7 @@ function AttendanceAdminPreview({ profiles, departments, groupLeaderAssignments 
               })}
             </div>
             <div className="mt-4 flex flex-wrap gap-2" aria-label="Common attendance types">
-              {['Morning Group Sadhana', 'Common Meeting', 'Satsang'].map((type) => <span key={type} className="rounded-full border border-[#e8e1d1] bg-white px-3 py-1.5 text-xs font-medium text-[#485a61]">{type}</span>)}
+              {['Morning Group Sadhana', 'Common Meeting', 'Satsang'].map((type) => <span key={type} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-[#485a61]">{type}</span>)}
             </div>
             <p className="mt-3 text-xs text-[#66777d]">Select five different members. Exactly one selected slot is marked Manager; the remaining four are Members.</p>
             <button type="button" disabled className="mt-4 min-h-10 rounded-lg bg-[#bd8d36] px-4 py-2 text-sm font-semibold text-white opacity-50">Save team · Preview only</button>
@@ -394,7 +350,7 @@ function AttendanceAdminPreview({ profiles, departments, groupLeaderAssignments 
   );
 }
 
-export default function SevakAttendancePage({ shellSession }: { shellSession: Session }) {
+export default function SevakAttendancePage({ shellSession, view = 'profiles' }: { shellSession: Session; view?: 'profiles' | 'administration' }) {
   const [session, setSession] = useState<Session | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [profiles, setProfiles] = useState<SevakProfile[]>([]);
@@ -614,7 +570,7 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
       supabase.from('sevak_role_assignments').select('id, user_id, department_id, created_at').eq('role', 'group_leader'),
       supabase.from('sevak_departments').select('id, name, is_active').order('name'),
       loadAllSevakProfiles(),
-    ]).then(async ([adminResult, rolesResult, departmentResult, profileResult]) => {
+    ]).then(([adminResult, rolesResult, departmentResult, profileResult]) => {
       if (!active) return;
       if (adminResult.error) {
         setLoadError(`Unable to check trusted Sevak role. Apply the Sevak management migration first: ${adminResult.error.message}`);
@@ -659,50 +615,11 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
         : loadedProfiles.find((profile) => profile.status.toLowerCase() === 'active' && profile.approval_status === 'approved')?.id ?? '');
       setSevaDepartment((current) => current || loadedDepartments.find((item) => item.id === loadedProfiles[0]?.department_id)?.id || '');
       if (loadedProfiles.length === 0) {
-        setAttendance([]);
-        setMonthlyAttendance([]);
         setLoadError('No Sevak profiles are visible for this account under the current trusted roles and Row Level Security policies.');
-        setLoading(false);
-        return;
       }
-
-      const [attendanceResult, todayResult, monthlyResult] = await Promise.all([
-        supabase
-          .from('sevak_attendance')
-          .select('id, sevak_id, attendance_date, attendance_type, department, department_id, status, check_in_time, remarks')
-          .eq('attendance_date', attendanceDate)
-          .order('attendance_type')
-          .order('department'),
-        supabase
-          .from('sevak_attendance')
-          .select('id, sevak_id, attendance_date, attendance_type, department, department_id, status, check_in_time, remarks')
-          .eq('attendance_date', todayInIndia()),
-        supabase
-          .from('sevak_attendance')
-          .select('id, sevak_id, attendance_date, attendance_type, department, department_id, status, check_in_time, remarks')
-          .gte('attendance_date', reportStart)
-          .lte('attendance_date', reportEnd)
-          .order('attendance_date'),
-      ]);
-      if (!active) return;
-      if (attendanceResult.error) {
-        setAttendance([]);
-        setLoadError(errorMessage(attendanceResult.error));
-      } else {
-        setAttendance((attendanceResult.data ?? []) as AttendanceRecord[]);
-      }
-      if (todayResult.error) {
-        setTodayAttendance([]);
-        setLoadError((current) => current || errorMessage(todayResult.error));
-      } else {
-        setTodayAttendance((todayResult.data ?? []) as AttendanceRecord[]);
-      }
-      if (monthlyResult.error) {
-        setMonthlyAttendance([]);
-        setLoadError((current) => current || errorMessage(monthlyResult.error));
-      } else {
-        setMonthlyAttendance((monthlyResult.data ?? []) as AttendanceRecord[]);
-      }
+      setAttendance([]);
+      setTodayAttendance([]);
+      setMonthlyAttendance([]);
       setLoading(false);
     }).catch((error: unknown) => {
       if (!active) return;
@@ -711,7 +628,7 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
     });
 
     return () => { active = false; };
-  }, [authReady, session, attendanceDate, reportStart, reportEnd, refreshKey]);
+  }, [authReady, session, view, refreshKey]);
 
   useEffect(() => {
     if (!authReady || loading || window.location.hash !== '#monthly-attendance-heading') return;
@@ -1222,18 +1139,16 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
   };
 
   return (
-    <SevakLayout session={shellSession} pathname="/sevak-attendance">
-    <div className={isAdmin ? 'md:grid md:grid-cols-[228px_minmax(0,1fr)]' : ''}>
-    {isAdmin && <AttendanceAdminSidebar />}
-    <main className={`min-h-screen bg-[#f8f7f3] px-5 py-10 text-[#263238] sm:px-8 sm:py-14 ${isAdmin ? 'min-w-0' : ''}`}>
+    <SevakLayout session={shellSession} pathname={view === 'profiles' ? '/sevak-attendance/profiles' : '/sevak-attendance/administration'}>
+    <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-800 sm:px-8 sm:py-10">
       <div className="mx-auto max-w-7xl">
       <header className="mb-8 max-w-2xl">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#a57d31]">Sevak Attendance System</p>
-        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-[#263238] sm:text-3xl">Sevak Attendance Management Dashboard</h1>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-[#263238] sm:text-3xl">{view === 'profiles' ? 'Sevak Profiles' : 'Attendance Administration'}</h1>
         <p className="mt-3 text-sm leading-6 text-[#66777d] sm:text-base">
-          Review attendance activity, department coverage, and Sevak records.
+          {view === 'profiles' ? 'Search authorized Sevak profiles, review details, and manage approval or photo workflows when permitted.' : 'Manage departments, Group Leader assignments, and attendance teams.'}
         </p>
-        <nav aria-label="Breadcrumb" className="mt-3 text-xs text-[#768187]"><a href="/" className="hover:text-emerald-700">Home</a><span className="mx-2">›</span><span>Sevak Attendance</span><span className="mx-2">›</span><span className="text-[#344b51]">Monthly Attendance</span></nav>
+        <nav aria-label="Breadcrumb" className="mt-3 text-xs text-slate-500"><a href="/sevak-attendance" className="hover:text-emerald-700">Attendance workspace</a><span className="mx-2">›</span><span className="text-slate-800">{view === 'profiles' ? 'Sevak Profiles' : 'Administration'}</span></nav>
         {session && !loading && <p className="mt-3 text-xs text-[#768187]">{isAdmin ? 'Trusted role: Administrator' : leaderDepartmentIds.length ? `Trusted role: Group Leader (${leaderDepartmentIds.length} department scope${leaderDepartmentIds.length === 1 ? '' : 's'})` : 'No Sevak management role assigned to this account.'}</p>}
       </header>
 
@@ -1241,41 +1156,12 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
       {message && <p role="status" className="mb-5 rounded-xl border border-emerald-700/20 bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}
       {actionError && <p role="alert" className="mb-5 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{actionError}</p>}
 
-      <section aria-label="Attendance dashboard overview" className="mb-8 space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-          <div><p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Reporting period</p><p className="mt-1 text-sm font-semibold text-slate-800">{reportDateLabel}</p></div>
-          <div className="flex flex-wrap items-center gap-2">
-            <label className="text-xs text-slate-600"><span className="sr-only">Reporting period</span><select aria-label="Reporting period" value={reportPeriod} onChange={(event) => setReportPeriod(event.target.value as ReportPeriod)} className="min-h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 focus-visible:outline-2 focus-visible:outline-emerald-600"><option value="daily">Daily</option><option value="last3days">Last 3 Days</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="last3months">Last 3 Months</option><option value="custom">Custom Range</option></select></label>
-            {reportPeriod === 'custom' && <><label className="text-xs text-slate-600">From<input aria-label="Custom range start" type="date" max={reportToday} value={customRangeStart} onChange={(event) => setCustomRangeStart(event.target.value)} className="ml-1 min-h-10 rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-800" /></label><label className="text-xs text-slate-600">To<input aria-label="Custom range end" type="date" max={reportToday} value={customRangeEnd} onChange={(event) => setCustomRangeEnd(event.target.value)} className="ml-1 min-h-10 rounded-lg border border-slate-200 bg-white px-2 text-sm text-slate-800" /></label></>}
-            <label className="text-xs text-slate-600"><span className="sr-only">Department filter</span><select aria-label="Dashboard department filter" value={reportDepartmentFilter} onChange={(event) => setReportDepartmentFilter(event.target.value)} className="min-h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800"><option value="ALL">All authorized departments</option>{departments.filter((department) => department.is_active || leaderDepartmentIds.includes(department.id)).map((department) => <option key={department.id} value={department.id}>{department.name}</option>)}</select></label>
-            <label className="text-xs text-slate-600"><span className="sr-only">Search by Sevak name</span><input aria-label="Search by Sevak name" value={reportSearch} onChange={(event) => setReportSearch(event.target.value)} placeholder="Search Sevak" className="min-h-10 w-36 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 placeholder:text-slate-400" /></label>
-            <button type="button" onClick={() => { setReportPeriod('monthly'); setCustomRangeStart(`${reportToday.slice(0, 7)}-01`); setCustomRangeEnd(reportToday); setReportDepartmentFilter('ALL'); setReportSearch(''); }} className="min-h-10 rounded-lg border border-slate-200 px-3 text-xs font-medium text-slate-600 hover:bg-slate-50">Reset</button>
-            <button type="button" onClick={exportReport} disabled={loading} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-emerald-200 px-3 text-xs font-semibold text-emerald-800 hover:bg-emerald-50 disabled:opacity-50"><Download size={15} aria-hidden="true" />Export Report</button>
-            <a href="#attendance-heading" className="inline-flex min-h-10 items-center rounded-lg bg-emerald-700 px-3 text-xs font-semibold text-white hover:bg-emerald-800">Mark Attendance</a>
-            <button type="button" disabled title="Attendance history view is not available in the current routes." className="min-h-10 rounded-lg border border-slate-200 px-3 text-xs font-medium text-slate-400">View History</button>
-          </div>
-        </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><span className="text-sm font-medium text-slate-600">Total Sevaks</span><Users size={18} className="text-emerald-700" aria-hidden="true" /></div><p className="mt-3 text-3xl font-semibold text-slate-900">{loading ? '…' : filteredProfilesCount.toLocaleString('en-IN')}</p><p className="mt-1 text-xs text-slate-500">Approved active profiles in scope</p></article>
-          <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><span className="text-sm font-medium text-slate-600">Present Today</span><UserCheck size={18} className="text-emerald-700" aria-hidden="true" /></div><p className="mt-3 text-3xl font-semibold text-emerald-700">{loading ? '…' : todayMetrics.present.toLocaleString('en-IN')}</p><p className="mt-1 text-xs text-slate-500">Distinct Sevaks with present records</p></article>
-          <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><span className="text-sm font-medium text-slate-600">Absent Today</span><UserX size={18} className="text-rose-600" aria-hidden="true" /></div><p className="mt-3 text-3xl font-semibold text-rose-700">{loading ? '…' : todayMetrics.absent.toLocaleString('en-IN')}</p><button type="button" onClick={showAbsencesToday} className="mt-1 text-left text-xs font-medium text-emerald-800 underline underline-offset-2">View Details</button></article>
-          <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><span className="text-sm font-medium text-slate-600">Late Arrivals</span><Clock3 size={18} className="text-amber-600" aria-hidden="true" /></div><p className="mt-3 text-2xl font-semibold text-slate-500">Not available</p><p className="mt-1 text-xs text-slate-500">No arrival threshold is configured</p></article>
-        </div>
 
-        <div className="grid min-w-0 gap-4 [&>*]:min-w-0 lg:grid-cols-2">
-          <section aria-label="Attendance trend for selected reporting period" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-start justify-between"><div><h2 className="font-semibold text-slate-800">Attendance trend</h2><p className="mt-1 text-xs text-slate-500">Daily recorded statuses · {reportDateLabel}</p></div><Activity size={18} className="text-emerald-700" aria-hidden="true" /></div>{reportDailyTrend.length ? <div className="mt-5 overflow-x-auto"><svg role="img" aria-label="Line chart of recorded present and absent attendance by day" viewBox="0 0 720 205" className="h-48 min-w-[480px] w-full"><title>Daily present and absent records</title><line x1="38" y1="166" x2="682" y2="166" stroke="#cbd5e1" strokeWidth="1"/><line x1="38" y1="98" x2="682" y2="98" stroke="#e2e8f0" strokeWidth="1"/><line x1="38" y1="31" x2="682" y2="31" stroke="#e2e8f0" strokeWidth="1"/><polyline fill="none" stroke="#059669" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" points={reportDailyTrend.map((day,index)=>trendPoint(index,day.present)).join(' ')}/><polyline fill="none" stroke="#f87171" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" points={reportDailyTrend.map((day,index)=>trendPoint(index,day.absent)).join(' ')}/>{reportDailyTrend.map((day,index)=><g key={day.date}><circle cx={Number(trendPoint(index,day.present).split(',')[0])} cy={Number(trendPoint(index,day.present).split(',')[1])} r="3" fill="#059669"><title>{day.date}: {day.present} present records</title></circle><circle cx={Number(trendPoint(index,day.absent).split(',')[0])} cy={Number(trendPoint(index,day.absent).split(',')[1])} r="3" fill="#f87171"><title>{day.date}: {day.absent} absent records</title></circle>{(index===0 || index===reportDailyTrend.length-1 || index%Math.max(1,Math.ceil(reportDailyTrend.length/7))===0) && <text x={trendPoint(index,0).split(',')[0]} y="192" textAnchor="middle" fontSize="10" fill="#64748b">{day.date.slice(5)}</text>}</g>)}</svg></div> : <p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">No attendance records in this period. Missing records are not shown as absences.</p>}<div className="mt-4 flex gap-4 text-xs text-slate-500"><span><i className="mr-1 inline-block h-2 w-2 rounded-full bg-emerald-500" />Present records</span><span><i className="mr-1 inline-block h-2 w-2 rounded-full bg-rose-400" />Absent records</span></div></section>
-          <section aria-label="Department attendance totals" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><h2 className="font-semibold text-slate-800">Department-wise attendance</h2><p className="mt-1 text-xs text-slate-500">Recorded attendance by department · {reportDateLabel}</p>{monthlyDepartmentSummary.length ? <div className="mt-5 space-y-3">{monthlyDepartmentSummary.map((department) => <div key={department.id} className="grid grid-cols-[minmax(0,8rem)_minmax(0,1fr)_2rem] items-center gap-3 text-xs"><span className="truncate text-slate-600">{department.name}</span><div className="flex h-3 overflow-hidden rounded-full bg-slate-100"><span className="bg-emerald-500" style={{ width: `${department.present / maxDepartmentRecords * 100}%` }} /><span className="bg-rose-400" style={{ width: `${department.absent / maxDepartmentRecords * 100}%` }} /></div><span className="text-right text-slate-600">{department.count}</span></div>)}</div> : <p className="mt-4 text-sm text-slate-500">No department attendance records for this period.</p>}<div className="mt-4 flex gap-4 text-xs text-slate-500"><span>Present</span><span>Absent</span></div></section>
-          <section aria-label="Top six attendance performers" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><h2 className="font-semibold text-slate-800">Top 6 attendance performers</h2><p className="mt-1 text-xs text-slate-500">Rate among recorded present or absent sessions; unrecorded sessions are excluded.</p>{reportLeaderboard.length ? <ol className="mt-4 space-y-2">{reportLeaderboard.map((person, index) => <li key={person.id} className="flex items-center gap-3 rounded-xl bg-slate-50 p-3"><span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-100 text-sm font-semibold text-emerald-800">{person.name.trim().split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()}</span><span className="min-w-0 flex-1"><span className="block truncate text-sm font-medium text-slate-800">{index + 1}. {person.name}</span><span className="block truncate text-xs text-slate-500">{person.department} · {person.present} present</span></span><span className="text-sm font-semibold text-emerald-800">{Math.round(person.rate * 100)}%</span></li>)}</ol> : <p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Not enough recorded attendance to rank performers.</p>}</section>
-          <section aria-label="Weekly absence trend" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><h2 className="font-semibold text-slate-800">Weekly absence trend</h2><p className="mt-1 text-xs text-slate-500">Total absent records by weekday within the selected period</p><div className="mt-5 grid grid-cols-7 items-end gap-2">{weekdayAbsences.map((day) => <div key={day.label} className="flex flex-col items-center gap-2"><span className="text-[10px] text-slate-600">{day.count}</span><div className="flex h-24 w-full items-end rounded bg-slate-50"><span className="w-full rounded-t bg-rose-400" style={{ height: `${day.count / maxWeekdayAbsences * 100}%`, minHeight: day.count ? '4px' : 0 }} /></div><span className="text-[10px] text-slate-500">{day.label.slice(0, 3)}</span></div>)}</div></section>
-          <section aria-label="Sevaks by gender" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2"><h2 className="font-semibold text-slate-800">Sevaks by gender</h2><p className="mt-1 text-sm text-slate-500">Not available: gender is not included in the authorized profile data currently loaded for this dashboard.</p></section>
-        </div>
-      </section>
+      {view === 'administration' && isAdmin && <AttendanceAdminPreview profiles={profiles} departments={departments} groupLeaderAssignments={groupLeaderAssignments} />}
 
-      {isAdmin && <AttendanceAdminPreview profiles={profiles} departments={departments} groupLeaderAssignments={groupLeaderAssignments} />}
-
-      {isAdmin && (
-        <section aria-labelledby="sevak-approval-heading" className="mb-5 rounded-2xl border border-[#e8e1d1] bg-white p-5 sm:p-7">
+      {view === 'profiles' && isAdmin && (
+        <section aria-labelledby="sevak-approval-heading" className="mb-5 rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#a57d31]">Trusted administrator review</p>
@@ -1285,14 +1171,14 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
             <span className="text-xs text-[#8d6b28]">{profiles.filter((profile) => profile.approval_status === 'pending').length} pending</span>
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-            <input value={approvalSearch} onChange={(event) => { setApprovalSearch(event.target.value); setApprovalPage(0); }} placeholder="Search name, mobile, or department" aria-label="Search Sevak profiles" className="rounded-lg border border-[#e8e1d1] bg-[#f8f7f3] px-3 py-2 text-sm text-[#263238] placeholder:text-[#9aa2a3]" />
-            <select value={approvalFilter} onChange={(event) => { setApprovalFilter(event.target.value as typeof approvalFilter); setApprovalPage(0); }} aria-label="Filter Sevak profiles by approval status" className="rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
+            <input value={approvalSearch} onChange={(event) => { setApprovalSearch(event.target.value); setApprovalPage(0); }} placeholder="Search name, mobile, or department" aria-label="Search Sevak profiles" className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-[#263238] placeholder:text-[#9aa2a3]" />
+            <select value={approvalFilter} onChange={(event) => { setApprovalFilter(event.target.value as typeof approvalFilter); setApprovalPage(0); }} aria-label="Filter Sevak profiles by approval status" className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238]">
               <option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="all">All statuses</option>
             </select>
           </div>
           <div className="mt-3 space-y-2">
             {filteredApprovalProfiles.map((profile) => (
-              <div key={profile.id} className="rounded-xl border border-[#e8e1d1] bg-[#fbfaf7] p-3">
+              <div key={profile.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <button type="button" onClick={() => { setSelectedProfileId(profile.id); setTransferDepartmentId(''); setActionError(''); }} className="min-w-0 flex-1 text-left">
                     <span className="block truncate text-sm font-semibold text-[#263238]">{profile.name} <span className="font-normal text-[#768187]">· {profile.sevak_id}</span></span>
@@ -1306,27 +1192,27 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
                 </div>
                 {profile.approval_status === 'rejected' && <p className="mt-2 text-xs text-rose-700">Reason: {profile.rejection_reason}</p>}
                 {rejectingProfileId === profile.id && <div className="mt-3 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
-                  <textarea required maxLength={1000} value={rejectionReasonDraft} onChange={(event) => setRejectionReasonDraft(event.target.value)} placeholder="Explain what needs correction" className="min-h-20 rounded-lg border border-[#e8e1d1] bg-[#f8f7f3] px-3 py-2 text-sm text-[#263238] placeholder:text-[#9aa2a3]" />
+                  <textarea required maxLength={1000} value={rejectionReasonDraft} onChange={(event) => setRejectionReasonDraft(event.target.value)} placeholder="Explain what needs correction" className="min-h-20 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-[#263238] placeholder:text-[#9aa2a3]" />
                   <button type="button" disabled={savingManagement || !rejectionReasonDraft.trim()} onClick={() => void setProfileApproval(profile, 'rejected')} className="self-end rounded-lg bg-rose-300 px-3 py-2 text-xs font-semibold text-[#263238] disabled:opacity-50">Confirm rejection</button>
                 </div>}
               </div>
             ))}
-            {filteredApprovalProfiles.length === 0 && <p className="rounded-lg border border-[#e8e1d1] p-3 text-sm text-[#768187]">No profiles match this search and approval filter.</p>}
+            {filteredApprovalProfiles.length === 0 && <p className="rounded-lg border border-slate-200 p-3 text-sm text-[#768187]">No profiles match this search and approval filter.</p>}
           </div>
           {approvalMatches.length > DIRECTORY_PAGE_SIZE && <div className="mt-3 flex items-center justify-end gap-2 text-xs text-[#66777d]">
-            <button type="button" disabled={approvalPage === 0} onClick={() => setApprovalPage((page) => page - 1)} className="rounded border border-[#e8e1d1] px-3 py-2 disabled:opacity-40">Previous</button>
+            <button type="button" disabled={approvalPage === 0} onClick={() => setApprovalPage((page) => page - 1)} className="rounded border border-slate-200 px-3 py-2 disabled:opacity-40">Previous</button>
             <span>Page {approvalPage + 1} of {Math.ceil(approvalMatches.length / DIRECTORY_PAGE_SIZE)}</span>
-            <button type="button" disabled={(approvalPage + 1) * DIRECTORY_PAGE_SIZE >= approvalMatches.length} onClick={() => setApprovalPage((page) => page + 1)} className="rounded border border-[#e8e1d1] px-3 py-2 disabled:opacity-40">Next</button>
+            <button type="button" disabled={(approvalPage + 1) * DIRECTORY_PAGE_SIZE >= approvalMatches.length} onClick={() => setApprovalPage((page) => page + 1)} className="rounded border border-slate-200 px-3 py-2 disabled:opacity-40">Next</button>
           </div>}
         </section>
       )}
 
-      <section aria-labelledby="profile-heading" className="rounded-2xl border border-[#e8e1d1] bg-white p-5 shadow-xl shadow-black/20 sm:p-7">
+      {view === 'profiles' && <section aria-labelledby="profile-heading" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-black/20 sm:p-7">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 id="profile-heading" className="text-lg font-semibold text-[#263238]">Sevak Profile</h2>
           <span className="text-xs text-[#768187]">{loading ? 'Loading profiles…' : `${directoryMatches.length} approved Sevak profiles`}</span>
         </div>
-        <input value={directorySearch} onChange={(event) => { setDirectorySearch(event.target.value); setDirectoryPage(0); }} placeholder="Search approved profiles by name, mobile, ID, or department" aria-label="Search approved Sevak profiles" className="mt-4 w-full rounded-lg border border-[#e8e1d1] bg-[#f8f7f3] px-3 py-2 text-sm text-[#263238] placeholder:text-[#9aa2a3]" />
+        <input value={directorySearch} onChange={(event) => { setDirectorySearch(event.target.value); setDirectoryPage(0); }} placeholder="Search approved profiles by name, mobile, ID, or department" aria-label="Search approved Sevak profiles" className="mt-4 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-[#263238] placeholder:text-[#9aa2a3]" />
         {directoryProfiles.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2" aria-label="Approved active Sevak profiles">
             {directoryProfiles.map((profile) => (
@@ -1335,12 +1221,12 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
                 type="button"
                 onClick={() => { setSelectedProfileId(profile.id); setTransferDepartmentId(''); setActionError(''); }}
                 aria-pressed={selectedProfile?.id === profile.id}
-                className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-xs transition ${selectedProfile?.id === profile.id ? 'border-[#bd8d36]/50 bg-[#bd8d36]/10 text-[#78591d]' : 'border-[#e8e1d1] bg-white text-[#485a61] hover:border-[#cbb782]'}`}
+                className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-xs transition ${selectedProfile?.id === profile.id ? 'border-[#bd8d36]/50 bg-[#bd8d36]/10 text-[#78591d]' : 'border-slate-200 bg-white text-[#485a61] hover:border-[#cbb782]'}`}
               >
                 {profile.id === selectedProfile?.id && profileImageUrl ? (
-                  <img src={profileImageUrl} alt={`${profile.name} private Supabase profile`} className="h-10 w-10 shrink-0 rounded-lg border border-[#e8e1d1] object-cover" />
+                  <img src={profileImageUrl} alt={`${profile.name} private Supabase profile`} className="h-10 w-10 shrink-0 rounded-lg border border-slate-200 object-cover" />
                 ) : !profile.profile_picture && SAMPLE_PROFILE_IMAGES[profile.sevak_id] ? (
-                  <img src={SAMPLE_PROFILE_IMAGES[profile.sevak_id]} alt={`${profile.name} temporary sample portrait`} className="h-10 w-10 shrink-0 rounded-lg border border-[#e8e1d1] object-cover" />
+                  <img src={SAMPLE_PROFILE_IMAGES[profile.sevak_id]} alt={`${profile.name} temporary sample portrait`} className="h-10 w-10 shrink-0 rounded-lg border border-slate-200 object-cover" />
                 ) : null}
                 <span>
                   <span className="block font-semibold">{profile.name}</span>
@@ -1352,19 +1238,19 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
           </div>
         )}
         {directoryMatches.length > DIRECTORY_PAGE_SIZE && <div className="mt-3 flex items-center justify-end gap-2 text-xs text-[#66777d]">
-          <button type="button" disabled={directoryPage === 0} onClick={() => setDirectoryPage((page) => page - 1)} className="rounded border border-[#e8e1d1] px-3 py-2 disabled:opacity-40">Previous</button>
+          <button type="button" disabled={directoryPage === 0} onClick={() => setDirectoryPage((page) => page - 1)} className="rounded border border-slate-200 px-3 py-2 disabled:opacity-40">Previous</button>
           <span>Page {directoryPage + 1} of {Math.ceil(directoryMatches.length / DIRECTORY_PAGE_SIZE)}</span>
-          <button type="button" disabled={(directoryPage + 1) * DIRECTORY_PAGE_SIZE >= directoryMatches.length} onClick={() => setDirectoryPage((page) => page + 1)} className="rounded border border-[#e8e1d1] px-3 py-2 disabled:opacity-40">Next</button>
+          <button type="button" disabled={(directoryPage + 1) * DIRECTORY_PAGE_SIZE >= directoryMatches.length} onClick={() => setDirectoryPage((page) => page + 1)} className="rounded border border-slate-200 px-3 py-2 disabled:opacity-40">Next</button>
         </div>}
         {isAdmin && (
-          <details onToggle={(event) => { if (!event.currentTarget.open) cancelCamera(); }} className="mt-4 rounded-xl border border-[#e8e1d1] bg-[#fbfaf7] p-4">
+          <details onToggle={(event) => { if (!event.currentTarget.open) cancelCamera(); }} className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
             <summary className="cursor-pointer text-sm font-semibold text-[#8d6b28]">Add Sevak profile</summary>
             <form onSubmit={(event) => void createProfile(event)} className="mt-4 grid gap-3 sm:grid-cols-2">
-              <label className="text-xs text-[#66777d]">Unique Sevak ID<input required value={newProfile.sevak_id} onChange={(event) => setNewProfile({ ...newProfile, sevak_id: event.target.value })} className="mt-1 block w-full rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]" /></label>
-              <label className="text-xs text-[#66777d]">Name<input required value={newProfile.name} onChange={(event) => setNewProfile({ ...newProfile, name: event.target.value })} className="mt-1 block w-full rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]" /></label>
-              <label className="text-xs text-[#66777d]">Mobile number<input required type="tel" value={newProfile.mobile} onChange={(event) => setNewProfile({ ...newProfile, mobile: event.target.value })} className="mt-1 block w-full rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]" /></label>
-              <label className="text-xs text-[#66777d]">Department<select required value={newProfile.department_id} onChange={(event) => setNewProfile({ ...newProfile, department_id: event.target.value })} className="mt-1 block w-full rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]"><option value="">Choose department</option>{departments.filter((item) => item.is_active).map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-              <label className="text-xs text-[#66777d]">Status<select value={newProfile.status} onChange={(event) => setNewProfile({ ...newProfile, status: event.target.value })} className="mt-1 block w-full rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]"><option value="active">Active</option><option value="inactive">Inactive</option></select></label>
+              <label className="text-xs text-[#66777d]">Unique Sevak ID<input required value={newProfile.sevak_id} onChange={(event) => setNewProfile({ ...newProfile, sevak_id: event.target.value })} className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238]" /></label>
+              <label className="text-xs text-[#66777d]">Name<input required value={newProfile.name} onChange={(event) => setNewProfile({ ...newProfile, name: event.target.value })} className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238]" /></label>
+              <label className="text-xs text-[#66777d]">Mobile number<input required type="tel" value={newProfile.mobile} onChange={(event) => setNewProfile({ ...newProfile, mobile: event.target.value })} className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238]" /></label>
+              <label className="text-xs text-[#66777d]">Department<select required value={newProfile.department_id} onChange={(event) => setNewProfile({ ...newProfile, department_id: event.target.value })} className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238]"><option value="">Choose department</option>{departments.filter((item) => item.is_active).map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+              <label className="text-xs text-[#66777d]">Status<select value={newProfile.status} onChange={(event) => setNewProfile({ ...newProfile, status: event.target.value })} className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238]"><option value="active">Active</option><option value="inactive">Inactive</option></select></label>
               <div className="text-xs text-[#66777d] sm:col-span-2">
                 <label htmlFor="sevak-profile-photo" className="block">Profile photo</label>
                 <p className="mt-1 text-[11px] text-[#768187]">Camera captures are saved with this app; selected files remain in private Supabase Storage.</p>
@@ -1374,7 +1260,7 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
                 </div>
                 {profilePhoto && <p className="mt-1 text-[11px] text-[#768187]">Selected: {profilePhoto.name}</p>}
                 {cameraError && <p role="alert" className="mt-2 rounded-lg border border-rose-200 bg-rose-50 p-2 text-xs text-rose-700">{cameraError}</p>}
-                {(cameraOpen || cameraPhotoPreview) && <div className="mt-3 rounded-xl border border-[#e8e1d1] bg-[#f8f7f3] p-3 sm:max-w-xl">
+                {(cameraOpen || cameraPhotoPreview) && <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:max-w-xl">
                   {cameraOpen ? <video ref={cameraVideoRef} autoPlay muted playsInline aria-label="Live camera preview" className="aspect-video w-full rounded-lg bg-black object-cover" /> : <img src={cameraPhotoPreview} alt="Captured Sevak profile photo preview" className="aspect-video w-full rounded-lg bg-black object-contain sm:max-h-80" />}
                   <div className="mt-3 flex flex-wrap gap-2">
                     {cameraOpen && <button type="button" onClick={capturePhoto} className="rounded-lg bg-[#bd8d36] px-3 py-2 text-xs font-semibold text-[#263238]">Capture Photo</button>}
@@ -1400,7 +1286,7 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
                 } else {
                   setProfileImageError('Profile picture not available: the saved Storage object could not be loaded. Check the saved path and private bucket access.');
                 }
-              }} className="h-24 w-24 rounded-2xl border border-[#e8e1d1] object-cover" />
+              }} className="h-24 w-24 rounded-2xl border border-slate-200 object-cover" />
               <p className="mt-1 text-center text-[10px] text-emerald-700">Supabase profile picture</p>
             </div>
           ) : selectedProfile?.profile_picture ? (
@@ -1446,47 +1332,47 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
           >{updatingProfilePhoto ? 'Uploading photo…' : 'Change Photo'}</button>
         </div>}
         {isAdmin && selectedProfile && (
-          <div className="mt-4 flex flex-wrap items-end gap-3 rounded-xl border border-[#e8e1d1] bg-[#fbfaf7] p-4">
+          <div className="mt-4 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
             <label className="text-xs text-[#66777d]">Transfer department
-              <select value={transferDepartmentId || selectedProfile.department_id} onChange={(event) => setTransferDepartmentId(event.target.value)} className="mt-1 block rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
+              <select value={transferDepartmentId || selectedProfile.department_id} onChange={(event) => setTransferDepartmentId(event.target.value)} className="mt-1 block rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238]">
                 {departments.filter((item) => item.is_active || item.id === selectedProfile.department_id).map((item) => <option key={item.id} value={item.id}>{item.name}{item.is_active ? '' : ' (inactive)'}</option>)}
               </select>
             </label>
             <button type="button" disabled={savingManagement || !(transferDepartmentId || selectedProfile.department_id) || (transferDepartmentId || selectedProfile.department_id) === selectedProfile.department_id} onClick={() => void transferSelectedProfile()} className="rounded-lg border border-[#bd8d36]/40 px-3 py-2 text-xs font-semibold text-[#78591d] disabled:opacity-40">Confirm department transfer</button>
           </div>
         )}
-      </section>
+      </section>}
 
-      {isAdmin && (
-        <section aria-labelledby="department-management-heading" className="mt-5 rounded-2xl border border-[#e8e1d1] bg-white p-5 sm:p-7">
+      {view === 'administration' && isAdmin && (
+        <section aria-labelledby="department-management-heading" className="mt-5 rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
           <h2 id="department-management-heading" className="text-lg font-semibold text-[#263238]">Departments</h2>
           <form onSubmit={(event) => void createDepartment(event)} className="mt-4 flex flex-wrap gap-2">
-            <input required value={newDepartmentName} onChange={(event) => setNewDepartmentName(event.target.value)} placeholder="New department name" className="min-w-56 flex-1 rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238] placeholder:text-[#9aa2a3]" />
+            <input required value={newDepartmentName} onChange={(event) => setNewDepartmentName(event.target.value)} placeholder="New department name" className="min-w-56 flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238] placeholder:text-[#9aa2a3]" />
             <button disabled={savingManagement} className="rounded-lg bg-[#bd8d36] px-4 py-2 text-xs font-semibold text-[#263238] disabled:opacity-50">Add department</button>
           </form>
           <div className="mt-4 grid gap-2 sm:grid-cols-2">
             {departments.map((department) => (
-              <div key={department.id} className="flex flex-wrap items-center gap-2 rounded-lg border border-[#e8e1d1] px-3 py-2">
+              <div key={department.id} className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 px-3 py-2">
                 <input aria-label={`Department name ${department.name}`} value={department.name} onChange={(event) => setDepartments((current) => current.map((item) => item.id === department.id ? { ...item, name: event.target.value } : item))} className="min-w-32 flex-1 bg-transparent text-sm text-[#344b51] outline-none" />
                 <span className={`text-[10px] uppercase ${department.is_active ? 'text-emerald-700' : 'text-[#768187]'}`}>{department.is_active ? 'Active' : 'Inactive'}</span>
-                <button type="button" disabled={savingManagement} onClick={() => void updateDepartment(department, { name: department.name.trim() })} className="rounded border border-[#e8e1d1] px-2 py-1 text-[10px] text-[#485a61] disabled:opacity-40">Rename</button>
-                <button type="button" disabled={savingManagement} onClick={() => void updateDepartment(department, { is_active: !department.is_active })} className="rounded border border-[#e8e1d1] px-2 py-1 text-[10px] text-[#485a61] disabled:opacity-40">{department.is_active ? 'Deactivate' : 'Activate'}</button>
+                <button type="button" disabled={savingManagement} onClick={() => void updateDepartment(department, { name: department.name.trim() })} className="rounded border border-slate-200 px-2 py-1 text-[10px] text-[#485a61] disabled:opacity-40">Rename</button>
+                <button type="button" disabled={savingManagement} onClick={() => void updateDepartment(department, { is_active: !department.is_active })} className="rounded border border-slate-200 px-2 py-1 text-[10px] text-[#485a61] disabled:opacity-40">{department.is_active ? 'Deactivate' : 'Activate'}</button>
               </div>
             ))}
           </div>
         </section>
       )}
 
-      {isAdmin && (
-        <section aria-labelledby="group-leader-management-heading" className="mt-5 rounded-2xl border border-[#e8e1d1] bg-white p-5 sm:p-7">
+      {view === 'administration' && isAdmin && (
+        <section aria-labelledby="group-leader-management-heading" className="mt-5 rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
           <h2 id="group-leader-management-heading" className="text-lg font-semibold text-[#263238]">Group Leader assignments</h2>
           <p className="mt-2 max-w-3xl text-xs leading-5 text-[#66777d]">Assign access to one active department using the user&apos;s Supabase Auth UUID. Database RLS permits these assignment writes only for trusted Sevak Administrators.</p>
           <form onSubmit={(event) => void assignGroupLeader(event)} className="mt-4 flex flex-wrap items-end gap-3">
             <label className="min-w-64 flex-1 text-xs text-[#66777d]">Supabase Auth user UUID
-              <input required value={newGroupLeaderUserId} onChange={(event) => setNewGroupLeaderUserId(event.target.value)} autoComplete="off" placeholder="00000000-0000-0000-0000-000000000000" className="mt-1 block min-h-10 w-full rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 font-mono text-xs text-[#263238]" />
+              <input required value={newGroupLeaderUserId} onChange={(event) => setNewGroupLeaderUserId(event.target.value)} autoComplete="off" placeholder="00000000-0000-0000-0000-000000000000" className="mt-1 block min-h-10 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 font-mono text-xs text-[#263238]" />
             </label>
             <label className="min-w-52 text-xs text-[#66777d]">Department
-              <select required value={newGroupLeaderDepartmentId} onChange={(event) => setNewGroupLeaderDepartmentId(event.target.value)} className="mt-1 block min-h-10 w-full rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
+              <select required value={newGroupLeaderDepartmentId} onChange={(event) => setNewGroupLeaderDepartmentId(event.target.value)} className="mt-1 block min-h-10 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238]">
                 <option value="">Choose active department</option>
                 {departments.filter((department) => department.is_active).map((department) => <option key={department.id} value={department.id}>{department.name}</option>)}
               </select>
@@ -1495,8 +1381,8 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
           </form>
           <div className="mt-5 space-y-2">
             <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-[#768187]">Current assignments ({groupLeaderAssignments.length})</h3>
-            {groupLeaderAssignments.length === 0 ? <p className="rounded-lg bg-[#fbfaf7] p-3 text-xs text-[#768187]">No Group Leader assignments are visible.</p> : groupLeaderAssignments.map((assignment) => (
-              <div key={assignment.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#e8e1d1] px-3 py-2">
+            {groupLeaderAssignments.length === 0 ? <p className="rounded-lg bg-slate-50 p-3 text-xs text-[#768187]">No Group Leader assignments are visible.</p> : groupLeaderAssignments.map((assignment) => (
+              <div key={assignment.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2">
                 <div className="min-w-0"><p className="break-all font-mono text-xs text-[#344b51]">{assignment.user_id}</p><p className="mt-1 text-xs text-[#768187]">{departments.find((department) => department.id === assignment.department_id)?.name ?? 'Inactive or unavailable department'}</p></div>
                 <button type="button" disabled={savingManagement} onClick={() => void revokeGroupLeader(assignment)} className="rounded border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-50">Revoke</button>
               </div>
@@ -1505,139 +1391,9 @@ export default function SevakAttendancePage({ shellSession }: { shellSession: Se
         </section>
       )}
 
-      <section aria-labelledby="attendance-heading" className="mt-10">
-        <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#768187]">Manual entry</p>
-            <h2 id="attendance-heading" className="mt-2 text-2xl font-semibold tracking-tight text-[#263238]">Manual Attendance</h2>
-          </div>
-          <label className="text-xs text-[#66777d]">
-            Attendance date
-            <input type="date" value={attendanceDate} onChange={(event) => setAttendanceDate(event.target.value)} className="ml-2 rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]" />
-          </label>
-        </div>
-        <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-[#e8e1d1] bg-white p-4">
-          <label className="text-xs text-[#66777d]">Department filter
-            <select value={attendanceDepartmentFilter} onChange={(event) => setAttendanceDepartmentFilter(event.target.value)} className="mt-1 block min-w-48 rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
-              <option value="ALL">All authorized departments</option>
-              {departments.filter((department) => department.is_active || leaderDepartmentIds.includes(department.id)).map((department) => <option key={department.id} value={department.id}>{department.name}</option>)}
-            </select>
-          </label>
-          <label className="text-xs text-[#66777d]">Status filter
-            <select value={attendanceStatusFilter} onChange={(event) => setAttendanceStatusFilter(event.target.value)} className="mt-1 block min-w-36 rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
-              <option value="ALL">All statuses</option><option value="PRESENT">PRESENT</option><option value="ABSENT">ABSENT</option>
-            </select>
-          </label>
-          <p className="pb-2 text-xs text-[#768187]">Date is selected above; session is separated into the cards below. Results remain limited by your Supabase RLS scope.</p>
-        </div>
-        <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-[#e8e1d1] bg-[#fbfaf7] p-4">
-          <label className="text-xs text-[#66777d]">Search name/mobile/ID
-            <input value={attendanceSearch} onChange={(event) => { setAttendanceSearch(event.target.value); setAttendancePage(0); }} placeholder="Search approved active Sevaks" className="mt-1 block w-56 rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238] placeholder:text-[#9aa2a3]" />
-          </label>
-          <label className="max-w-full text-xs text-[#66777d]">Active Sevak
-            <select required value={selectedProfileId} onChange={(event) => setSelectedProfileId(event.target.value)} className="mt-1 block min-w-0 max-w-full rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
-              <option value="">Choose a Sevak</option>
-              {attendanceSelectableProfiles.map((profile) => <option key={profile.id} value={profile.id}>{profile.name} - {profile.sevak_id}</option>)}
-            </select>
-          </label>
-          {activeAttendanceMatches.length > DIRECTORY_PAGE_SIZE && <div className="flex items-center gap-2 text-xs text-[#66777d]">
-            <button type="button" disabled={attendancePage === 0} onClick={() => setAttendancePage((page) => page - 1)} className="rounded border border-[#e8e1d1] px-2 py-2 disabled:opacity-40">Previous</button>
-            <span>{attendancePage + 1}/{Math.ceil(activeAttendanceMatches.length / DIRECTORY_PAGE_SIZE)}</span>
-            <button type="button" disabled={(attendancePage + 1) * DIRECTORY_PAGE_SIZE >= activeAttendanceMatches.length} onClick={() => setAttendancePage((page) => page + 1)} className="rounded border border-[#e8e1d1] px-2 py-2 disabled:opacity-40">Next</button>
-          </div>}
-          <label className="text-xs text-[#66777d]">Attendance type
-            <select value={manualAttendanceType} onChange={(event) => setManualAttendanceType(event.target.value as AttendanceType)} className="mt-1 block rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
-              <option value="MORNING_SADHANA">Morning Sadhana</option><option value="SEVA">Seva</option><option value="SATSANG">Satsang</option>
-            </select>
-          </label>
-          <label className="text-xs text-[#66777d]">
-            Status
-            <select value={attendanceStatus} onChange={(event) => setAttendanceStatus(event.target.value)} className="mt-1 block rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
-              <option value="PRESENT">PRESENT</option>
-              <option value="ABSENT">ABSENT</option>
-            </select>
-          </label>
-          {manualAttendanceType === 'SEVA' && <label className="text-xs text-[#66777d]">
-            Seva department
-            <select value={sevaDepartment} onChange={(event) => setSevaDepartment(event.target.value)} className="mt-1 block rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
-              <option value="">Choose department</option>
-              {departments.filter((department) => department.is_active && (isAdmin || leaderDepartmentIds.includes(department.id))).map((department) => <option key={department.id} value={department.id}>{department.name}</option>)}
-            </select>
-          </label>}
-          <button type="button" onClick={() => void saveAttendance(manualAttendanceType)} disabled={loading || !session || !selectedProfileId || savingType !== null || (manualAttendanceType === 'SEVA' && !sevaDepartment)} className="rounded-lg bg-[#bd8d36] px-4 py-2 text-xs font-semibold text-white disabled:opacity-50">{savingType ? 'Saving...' : 'Save attendance'}</button>
-          <p className="pb-2 text-xs text-[#768187]">Records are read and written through your current Supabase session and database RLS.</p>
-        </div>
-        <div className="grid gap-4 lg:grid-cols-3">
-          {attendanceByType.map((item) => (
-            <article key={item.type} className={`min-h-48 rounded-2xl border border-[#e8e1d1] bg-gradient-to-br ${item.accent} p-5`}>
-              <h3 className="text-lg font-semibold leading-7 text-[#263238]">{item.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-[#66777d]">{item.description}</p>
-              <div className="mt-4 space-y-2 border-t border-[#e8e1d1] pt-3">
-                <p className="text-xs font-semibold text-[#485a61]">{loading ? 'Loading saved attendance…' : `Saved for ${attendanceDate} (${item.records.length})`}</p>
-                {item.records.length === 0 && !loading ? <p className="text-xs text-[#768187]">No saved records for this date.</p> : item.records.map((record) => {
-                  const recordProfile = profiles.find((profile) => profile.id === record.sevak_id);
-                  return (
-                    <div key={record.id} className="rounded-lg border border-[#e8e1d1] bg-[#f8f7f3] px-3 py-2 text-xs">
-                      <p className="font-medium text-[#344b51]">{recordProfile?.name ?? record.sevak_id}</p>
-                      <p className="mt-1 text-[#66777d]">{record.attendance_date} · {record.attendance_type.replaceAll('_', ' ')}{record.department ? ` · ${record.department}` : ''}</p>
-                      <p className="mt-1 text-[#8d6b28]">{record.status} · Check-in: {record.check_in_time ? new Date(record.check_in_time).toLocaleString() : '—'}</p>
-                      {isAdmin && <button type="button" disabled={savingManagement} onClick={() => void correctAttendanceRecord(record, record.status.toUpperCase() === 'PRESENT' ? 'ABSENT' : 'PRESENT')} className="mt-2 rounded border border-[#bd8d36]/40 px-2 py-1 font-semibold text-[#78591d] disabled:opacity-40">Correct to {record.status.toUpperCase() === 'PRESENT' ? 'ABSENT' : 'PRESENT'}</button>}
-                    </div>
-                  );
-                })}
-              </div>
-            </article>
-          ))}
-        </div>
-        <div id="monthly-attendance-heading" className="mt-5 rounded-2xl border border-[#e8e1d1] bg-white p-5 sm:p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#768187]">Attendance report</p>
-              <h3 className="mt-2 text-lg font-semibold text-[#263238]">Attendance summary</h3>
-              <p className="mt-1 text-sm font-medium text-[#78591d]">{reportDateLabel}</p>
-            </div>
-            <p className="text-xs text-slate-500">{filteredReportAttendance.length.toLocaleString('en-IN')} total recorded entries</p>
-          </div>
-          <p className="mt-2 text-xs text-[#768187]">Summary uses only records visible to your trusted role under Row Level Security. No record means attendance was not recorded; it is not counted as an absence.</p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
-            {monthlySummary.map((item) => (
-              <div key={item.type} className="rounded-xl border border-[#e8e1d1] bg-[#fbfaf7] p-4">
-                <p className="text-sm font-medium text-[#344b51]">{item.title}</p>
-                <p className="mt-2 text-2xl font-semibold text-[#263238]">{loading ? '…' : item.count}</p>
-                <p className="mt-1 text-xs text-[#768187]">{item.count} recorded · {item.present} present · {item.absent} absent</p>
-              </div>
-            ))}
-          </div>
-          {isAdmin && <div className="mt-6">
-            <h4 className="text-sm font-semibold text-[#344b51]">Department totals</h4>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {monthlyDepartmentSummary.map((department) => <div key={department.id} className="rounded-xl border border-[#e8e1d1] bg-[#fbfaf7] p-4"><p className="font-medium text-[#344b51]">{department.name}</p><p className="mt-2 text-xs text-[#66777d]">{department.count} records · {department.present} present · {department.absent} absent</p></div>)}
-            </div>
-          </div>}
-          <div className="mt-6 grid gap-5 lg:grid-cols-2">
-            <section aria-label="Attendance and absence trend">
-              <h4 className="text-sm font-semibold text-[#344b51]">Attendance and absence trend</h4>
-              {reportDailyTrend.length ? <div className="mt-3 space-y-2">
-                {reportDailyTrend.map((day) => <div key={day.date} className="grid grid-cols-[5.5rem_minmax(0,1fr)_auto] items-center gap-2 text-xs">
-                  <span className="text-[#66777d]">{day.date.slice(5)}</span>
-                  <div className="flex h-3 overflow-hidden rounded-full bg-[#f1eee7]" title={`${day.records - day.absent} present, ${day.absent} absent`}>
-                    <span className="bg-emerald-500" style={{ width: `${day.records ? (day.present / day.records) * 100 : 0}%` }} />
-                    <span className="bg-rose-400" style={{ width: `${day.records ? (day.absent / day.records) * 100 : 0}%` }} />
-                  </div>
-                  <span className="text-[#66777d]">{day.records} records · {day.absent} absent</span>
-                </div>)}
-              </div> : <p className="mt-2 rounded-lg bg-[#fbfaf7] p-3 text-xs text-[#768187]">No attendance records in this period; missing records are not shown as absences.</p>}
-            </section>
-            <section aria-label="Attendance leaderboard">
-              <h4 className="text-sm font-semibold text-[#344b51]">Attendance leaderboard</h4>
-              {reportLeaderboard.length ? <ol className="mt-3 space-y-2">{reportLeaderboard.map((person, index) => <li key={person.id} className="flex items-center justify-between gap-3 rounded-lg bg-[#fbfaf7] px-3 py-2 text-xs"><span className="min-w-0 truncate font-medium text-[#344b51]">{index + 1}. {person.name}</span><span className="shrink-0 text-[#66777d]">{person.present} present · {person.absent} absent</span></li>)}</ol> : <p className="mt-2 rounded-lg bg-[#fbfaf7] p-3 text-xs text-[#768187]">No recorded attendance to rank.</p>}
-            </section>
-          </div>
-        </div>
-      </section>
+
       </div>
     </main>
-    </div>
     </SevakLayout>
   );
 }

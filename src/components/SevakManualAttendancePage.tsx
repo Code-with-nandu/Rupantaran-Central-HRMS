@@ -300,19 +300,19 @@ export default function SevakManualAttendancePage({ shellSession }: { shellSessi
 
   return (
     <SevakLayout session={shellSession} pathname="/sevak-attendance/manual">
-      <main className="min-h-screen bg-[#f8f7f3] px-5 py-8 text-[#263238] sm:px-8 sm:py-12">
+      <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-800 sm:px-8 sm:py-10">
         <div className="mx-auto max-w-7xl">
-          <a href="/sevak-attendance" className="inline-flex items-center gap-2 rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm font-semibold text-[#485a61] hover:border-[#cbb782] hover:text-[#78591d]">
+          <a href="/sevak-attendance" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-[#485a61] hover:border-[#cbb782] hover:text-[#78591d]">
             <ArrowLeft size={16} aria-hidden="true" /> Attendance dashboard
           </a>
 
           <header className="mt-6 flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#a57d31]">Sevak Attendance System</p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Manual Attendance</h1>
+              <h1 id="attendance-heading" className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Manual Attendance</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[#66777d]">Verify the Sevak profile, choose the session, and record one attendance entry. Your trusted role and Supabase Row Level Security determine which profiles and records are available.</p>
             </div>
-            {!loadingProfiles && session && <p className="rounded-full border border-[#e8e1d1] bg-white px-3 py-2 text-xs font-medium text-[#66777d]">
+            {!loadingProfiles && session && <p className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-[#66777d]">
               {isAdmin ? 'Administrator access' : leaderDepartmentIds.length ? `Group Leader · ${leaderDepartmentIds.length} department scope${leaderDepartmentIds.length === 1 ? '' : 's'}` : 'No management role'}
             </p>}
           </header>
@@ -321,8 +321,8 @@ export default function SevakManualAttendancePage({ shellSession }: { shellSessi
           {message && <p role="status" className="mt-5 rounded-xl border border-emerald-700/20 bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}
           {actionError && <p role="alert" className="mt-5 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{actionError}</p>}
 
-          <section className="mt-7 grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)]" aria-label="Manual attendance entry">
-            <div className="rounded-2xl border border-[#e8e1d1] bg-white p-5 shadow-sm sm:p-7">
+          <section className="mt-7 grid min-w-0 gap-5 [&>*]:min-w-0 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)]" aria-label="Manual attendance entry">
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
               <div className="flex items-center gap-3">
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f8f2e4] text-[#a57d31]"><Search size={19} aria-hidden="true" /></span>
                 <div>
@@ -343,8 +343,8 @@ export default function SevakManualAttendancePage({ shellSession }: { shellSessi
               />
 
               <div className="mt-4 max-h-[28rem] space-y-2 overflow-y-auto" aria-live="polite">
-                {loadingProfiles ? <p className="rounded-xl bg-[#fbfaf7] p-4 text-sm text-[#66777d]">Loading profiles allowed for this account…</p>
-                  : matchingProfiles.length === 0 ? <p className="rounded-xl bg-[#fbfaf7] p-4 text-sm text-[#66777d]">{search.trim() ? 'No approved active Sevaks match that search.' : 'No approved active Sevaks are visible for this account.'}</p>
+                {loadingProfiles ? <p className="rounded-xl bg-slate-50 p-4 text-sm text-[#66777d]">Loading profiles allowed for this account…</p>
+                  : matchingProfiles.length === 0 ? <p className="rounded-xl bg-slate-50 p-4 text-sm text-[#66777d]">{search.trim() ? 'No approved active Sevaks match that search.' : 'No approved active Sevaks are visible for this account.'}</p>
                     : matchingProfiles.slice(0, 12).map((profile) => {
                       const selected = profile.id === selectedProfileId;
                       const alreadyRecorded = records.some((record) => record.sevak_id === profile.id
@@ -354,9 +354,9 @@ export default function SevakManualAttendancePage({ shellSession }: { shellSessi
                         type="button"
                         aria-pressed={selected}
                         onClick={() => { setSelectedProfileId(profile.id); setActionError(''); setMessage(''); }}
-                        className={`flex min-h-[4.5rem] w-full items-center gap-3 rounded-xl border p-3 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bd8d36] ${selected ? 'border-[#bd8d36] bg-[#fbf7ec]' : 'border-[#e8e1d1] bg-white hover:border-[#cbb782] hover:bg-[#fbfaf7]'}`}
+                        className={`flex min-h-[4.5rem] w-full items-center gap-3 rounded-xl border p-3 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bd8d36] ${selected ? 'border-[#bd8d36] bg-[#fbf7ec]' : 'border-slate-200 bg-white hover:border-[#cbb782] hover:bg-slate-50'}`}
                       >
-                        <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full border border-[#e8e1d1] bg-[#f8f7f3] text-[#8d6b28]">
+                        <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full border border-slate-200 bg-slate-50 text-[#8d6b28]">
                           {profile.profile_picture ? <UserRound size={20} aria-hidden="true" /> : <UserRound size={20} aria-hidden="true" />}
                         </span>
                         <span className="min-w-0 flex-1">
@@ -372,7 +372,7 @@ export default function SevakManualAttendancePage({ shellSession }: { shellSessi
             </div>
 
             <div className="space-y-5">
-              <section className="rounded-2xl border border-[#e8e1d1] bg-white p-5 shadow-sm sm:p-7" aria-labelledby="attendance-details-heading">
+              <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7" aria-labelledby="attendance-details-heading">
                 <div className="flex items-center gap-3">
                   <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f8f2e4] text-[#a57d31]"><CalendarDays size={19} aria-hidden="true" /></span>
                   <div>
@@ -386,7 +386,7 @@ export default function SevakManualAttendancePage({ shellSession }: { shellSessi
 
                 <p className="mt-4 text-xs font-medium text-[#66777d]">Session</p>
                 <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-                  {ATTENDANCE_SESSIONS.map((item) => <button key={item.type} type="button" aria-pressed={attendanceType === item.type} onClick={() => { setAttendanceType(item.type); setSelectedProfileId(''); }} className={`min-h-11 rounded-lg border px-3 py-2 text-xs font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bd8d36] ${attendanceType === item.type ? 'border-[#bd8d36] bg-[#fbf7ec] text-[#78591d]' : 'border-[#e8e1d1] bg-white text-[#485a61] hover:border-[#cbb782]'}`}>{item.label}</button>)}
+                  {ATTENDANCE_SESSIONS.map((item) => <button key={item.type} type="button" aria-pressed={attendanceType === item.type} onClick={() => { setAttendanceType(item.type); setSelectedProfileId(''); }} className={`min-h-11 rounded-lg border px-3 py-2 text-xs font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bd8d36] ${attendanceType === item.type ? 'border-[#bd8d36] bg-[#fbf7ec] text-[#78591d]' : 'border-slate-200 bg-white text-[#485a61] hover:border-[#cbb782]'}`}>{item.label}</button>)}
                 </div>
 
                 <div className="mt-5 grid grid-cols-2 gap-2">
@@ -395,7 +395,7 @@ export default function SevakManualAttendancePage({ shellSession }: { shellSessi
                 </div>
               </section>
 
-              <section className="rounded-2xl border border-[#e8e1d1] bg-white p-5 shadow-sm sm:p-7" aria-labelledby="verify-profile-heading">
+              <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7" aria-labelledby="verify-profile-heading">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a57d31]">Identity check</p>
@@ -404,9 +404,9 @@ export default function SevakManualAttendancePage({ shellSession }: { shellSessi
                   <ShieldCheck size={21} className="text-[#a57d31]" aria-hidden="true" />
                 </div>
 
-                {!selectedProfile ? <p className="mt-4 rounded-xl bg-[#fbfaf7] p-4 text-sm text-[#768187]">Select a Sevak to review their profile photo and details.</p> : <>
-                  <div className="mt-4 flex items-center gap-4 rounded-xl bg-[#fbfaf7] p-4">
-                    <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-xl border border-[#e8e1d1] bg-white text-[#8d6b28]">
+                {!selectedProfile ? <p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-[#768187]">Select a Sevak to review their profile photo and details.</p> : <>
+                  <div className="mt-4 flex items-center gap-4 rounded-xl bg-slate-50 p-4">
+                    <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-white text-[#8d6b28]">
                       {photoUrl ? <img src={photoUrl} alt={`${selectedProfile.name} profile photo`} className="h-full w-full object-cover" /> : <UserRound size={28} aria-hidden="true" />}
                     </div>
                     <div className="min-w-0">
@@ -427,7 +427,7 @@ export default function SevakManualAttendancePage({ shellSession }: { shellSessi
                   <button type="button" aria-pressed={attendanceStatus === 'ABSENT'} onClick={() => setAttendanceStatus('ABSENT')} className={`flex min-h-12 items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bd8d36] ${attendanceStatus === 'ABSENT' ? 'border-orange-600 bg-orange-600 text-white' : 'border-orange-200 bg-orange-50 text-orange-800 hover:border-orange-400'}`}><CircleX size={17} aria-hidden="true" /> ABSENT</button>
                 </div>
 
-                {attendanceType === 'SEVA' && selectedProfile && <p className="mt-3 rounded-lg border border-[#e8e1d1] bg-[#fbfaf7] px-3 py-2 text-xs text-[#66777d]">Seva department: <strong className="text-[#344b51]">{selectedProfile.department}</strong></p>}
+                {attendanceType === 'SEVA' && selectedProfile && <p className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-[#66777d]">Seva department: <strong className="text-[#344b51]">{selectedProfile.department}</strong></p>}
                 {existingRecord && <div role="status" className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
                   Already recorded as <strong>{existingRecord.status}</strong>{existingRecord.check_in_time ? ` · Check-in ${new Date(existingRecord.check_in_time).toLocaleString()}` : ''}. This record cannot be overwritten here.
                 </div>}
@@ -439,14 +439,14 @@ export default function SevakManualAttendancePage({ shellSession }: { shellSessi
             </div>
           </section>
 
-          <section className="mt-7 overflow-hidden rounded-2xl border border-[#e8e1d1] bg-white" aria-labelledby="recorded-attendance-heading">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e8e1d1] px-5 py-4 sm:px-6">
+          <section className="mt-7 overflow-hidden rounded-2xl border border-slate-200 bg-white" aria-labelledby="recorded-attendance-heading">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-4 sm:px-6">
               <div>
                 <h2 id="recorded-attendance-heading" className="font-semibold">Recorded {ATTENDANCE_SESSIONS.find((item) => item.type === attendanceType)?.short} attendance</h2>
                 <p className="mt-1 text-xs text-[#768187]">{attendanceDate} · {loadingRecords ? 'Loading…' : `${filteredSessionRecords.length} record${filteredSessionRecords.length === 1 ? '' : 's'}`}</p>
               </div>
               <label className="text-xs text-[#66777d]">Filter status
-                <select value={historyStatusFilter} onChange={(event) => setHistoryStatusFilter(event.target.value as 'ALL' | AttendanceStatus)} className="mt-1 block rounded-lg border border-[#e8e1d1] bg-white px-3 py-2 text-sm text-[#263238]">
+                <select value={historyStatusFilter} onChange={(event) => setHistoryStatusFilter(event.target.value as 'ALL' | AttendanceStatus)} className="mt-1 block rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-[#263238]">
                   <option value="ALL">All</option><option value="PRESENT">PRESENT</option><option value="ABSENT">ABSENT</option>
                 </select>
               </label>

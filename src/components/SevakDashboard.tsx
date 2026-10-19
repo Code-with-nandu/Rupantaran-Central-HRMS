@@ -33,7 +33,7 @@ const replacementImages = {
 
 const features = [
   { title: 'Attendance dashboard', description: 'View your authorized attendance summary, reporting periods, and trends', href: '/sevak-dashboard/attendance', icon: Activity, status: 'View dashboard', available: true },
-  { title: 'Attendance history', description: 'Review your own attendance dates, sessions, statuses, and check-in times', href: '/sevak-attendance', icon: CalendarCheck2, status: 'View history', available: true },
+  { title: 'Attendance history', description: 'Review your own attendance dates, sessions, statuses, and check-in times', href: '/sevak-attendance/reports#monthly-attendance-heading', icon: CalendarCheck2, status: 'View history', available: true },
   { title: 'Leave Management', description: 'Leave requests are not available yet', href: '/sevak-dashboard/leave', icon: ClipboardList, status: 'Coming soon', available: false },
   { title: 'Medical Reports', description: 'Secure medical reports are not available yet', href: '/sevak-dashboard/medical', icon: FileHeart, status: 'Coming soon', available: false },
   { title: 'My Sevak Profile', description: 'Review your personal profile, saved photo, and approval status', href: '/sevak/my-profile', icon: UserRound, status: 'View profile', available: true },

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { CalendarCheck2, ClipboardList, FileHeart, HeartHandshake, Menu, UserRound, X } from 'lucide-react';
 import { supabase } from '../supabase';
+import AttendanceWorkspaceLayout from './AttendanceWorkspaceLayout';
 
 interface SevakLayoutProps { session?: Session; pathname: string; children: ReactNode }
 
@@ -25,6 +26,10 @@ export default function SevakLayout({ session, pathname, children }: SevakLayout
     setSigningOut(false);
     if (error) console.error('Unable to log out:', error.message);
   };
+
+  if (pathname.startsWith('/sevak-attendance')) {
+    return <AttendanceWorkspaceLayout session={session} pathname={pathname}>{children}</AttendanceWorkspaceLayout>;
+  }
 
   return (
     <div className="min-h-screen bg-white font-sans text-[#263238]">

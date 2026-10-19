@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const page = await readFile(new URL('../src/components/SevakAttendancePage.tsx', import.meta.url), 'utf8');
+const layout = await readFile(new URL('../src/components/AttendanceWorkspaceLayout.tsx', import.meta.url), 'utf8');
+const shell = await readFile(new URL('../src/components/SevakLayout.tsx', import.meta.url), 'utf8');
 const previewStart = page.indexOf('function AttendanceAdminPreview');
 const previewEnd = page.indexOf('export default function SevakAttendancePage');
 const preview = page.slice(previewStart, previewEnd);
@@ -30,15 +32,19 @@ test('common attendance preview offers five distinct member slots and one select
 });
 
 test('admin preview remains hidden from non-admin attendance users', () => {
-  assert.match(page, /\{isAdmin && <AttendanceAdminPreview/);
+  assert.match(page, /view === 'administration' && isAdmin && <AttendanceAdminPreview/);
+  assert.match(page, /view === 'administration' && isAdmin && \([\s\S]*department-management-heading/);
+  assert.match(page, /view === 'profiles' && isAdmin && \([\s\S]*sevak-approval-heading/);
 });
 
-test('Admin attendance layout has a responsive dark sidebar with working dashboard navigation', () => {
-  assert.match(page, /function AttendanceAdminSidebar/);
-  assert.match(page, /bg-\[#0b0b0e\]/);
-  assert.match(page, /md:grid-cols-\[228px_minmax\(0,1fr\)\]/);
-  assert.match(page, /label: 'Dashboard', href: '\/admin'/);
-  assert.match(page, /label: 'Attendance', href: '#attendance-heading', icon: CalendarCheck2, active: true/);
-  assert.match(page, /aria-label=\{menuOpen \? 'Close attendance navigation' : 'Open attendance navigation'\}/);
-  assert.match(page, /\{isAdmin && <AttendanceAdminSidebar \/>\}/);
+test('all attendance pages share one responsive navy sidebar with route-aware navigation', () => {
+  assert.match(layout, /lg:grid-cols-\[260px_minmax\(0,1fr\)\]/);
+  assert.match(layout, /bg-\[#101c32\]/);
+  for (const [label, path] of [['Dashboard', '/admin'], ['Attendance workspace', '/sevak-attendance'], ['Sevak Profiles', '/sevak-attendance/profiles'], ['Attendance', '/sevak-attendance/manual'], ['Department & Team Management', '/sevak-attendance/administration'], ['Reports', '/sevak-attendance/reports']]) {
+    assert.match(layout, new RegExp(`label: '${label}', href: '${path.replaceAll('/', '\\/')}'`));
+  }
+  assert.match(layout, /aria-current=\{active \? 'page' : undefined\}/);
+  assert.match(layout, /aria-label=\{menuOpen \? 'Close attendance menu' : 'Open attendance menu'\}/);
+  assert.match(shell, /pathname\.startsWith\('\/sevak-attendance'\)[\s\S]*?<AttendanceWorkspaceLayout session=\{session\} pathname=\{pathname\}/);
+  for (const route of ['/sevak-attendance', '/sevak-attendance/reports', '/sevak-attendance/manual', '/sevak-attendance/profiles', '/sevak-attendance/administration']) assert.ok(layout.includes(route));
 });

@@ -7,6 +7,7 @@ const gate = await readFile(new URL('../src/components/RoleDashboardGate.tsx', i
 const auth = await readFile(new URL('../src/components/UnifiedAuth.tsx', import.meta.url), 'utf8');
 const selection = await readFile(new URL('../src/components/RoleSelectionPage.tsx', import.meta.url), 'utf8');
 const attendance = await readFile(new URL('../src/components/SevakAttendancePage.tsx', import.meta.url), 'utf8');
+const attendanceLayout = await readFile(new URL('../src/components/AttendanceWorkspaceLayout.tsx', import.meta.url), 'utf8');
 const sevakDashboard = await readFile(new URL('../src/components/SevakDashboard.tsx', import.meta.url), 'utf8');
 const sevakLayout = await readFile(new URL('../src/components/SevakLayout.tsx', import.meta.url), 'utf8');
 
@@ -75,7 +76,7 @@ test('post-login destinations are exact allowlisted protected routes; default op
 });
 
 test('regular Sevak dashboard links to private profile and personal attendance history', () => {
-  assert.match(sevakDashboard, /Attendance history[\s\S]*?Review your own attendance dates, sessions, statuses, and check-in times[\s\S]*?href: '\/sevak-attendance'/);
+  assert.match(sevakDashboard, /Attendance history[\s\S]*?Review your own attendance dates, sessions, statuses, and check-in times[\s\S]*?href: '\/sevak-attendance\/reports#monthly-attendance-heading'/);
   assert.match(sevakDashboard, /My Sevak Profile[\s\S]*?saved photo[\s\S]*?href: '\/sevak\/my-profile'/);
 });
 
@@ -87,7 +88,10 @@ test('only a verified Sevak role opens the dedicated Sevak attendance dashboard'
   assert.match(gate, /if \(adminResult\.data === true\)[\s\S]*?setRole\('admin'\)[\s\S]*?assignmentsResult[\s\S]*?setRole\('group_leader'\)[\s\S]*?get_my_sevak_profile[\s\S]*?setRole\(profile\?\.id \? 'sevak' : 'missing'\)/);
   assert.match(gate, /if \(role !== requestedRole\)/);
   assert.doesNotMatch(gate, /requestedRole === 'sevak'[\s\S]*?return <>{children}<\/>/);
-  assert.match(app, /pathname === '\/sevak-attendance'[\s\S]*?requestedRole="attendance"[\s\S]*?<SevakAttendancePage shellSession=\{session\} \/>/);
+  assert.match(app, /pathname === '\/sevak-attendance'[\s\S]*?requestedRole="attendance"[\s\S]*?<SevakAttendanceWorkspacePage session=\{session\} \/>/);
+  assert.match(app, /pathname === '\/sevak-attendance\/reports'[\s\S]*?requestedRole="attendance"[\s\S]*?<SevakAttendanceDashboardPage session=\{session\} workspace \/>/);
+  assert.match(app, /pathname === '\/sevak-attendance\/profiles'[\s\S]*?requestedRole="attendance"[\s\S]*?<SevakAttendancePage shellSession=\{session\} view="profiles" \/>/);
+  assert.match(app, /pathname === '\/sevak-attendance\/administration'[\s\S]*?requestedRole="admin"[\s\S]*?<SevakAttendancePage shellSession=\{session\} view="administration" \/>/);
   assert.match(gate, /requestedRole === 'attendance'[\s\S]*?return <>{children}<\/>/);
   assert.match(gate, /if \(!localLoadingPreview && requestedRole === 'landing' && role/);
   assert.doesNotMatch(gate, /requestedRole === 'attendance'[\s\S]*?window\.location\.replace/);
@@ -107,8 +111,9 @@ test('verified Admin can access /admin but remains denied the Sevak-only attenda
 test('Admin navigation links to attendance and back while attendance remains protected', () => {
   assert.match(gate, /href="\/admin"[\s\S]*?Admin Dashboard/);
   assert.match(gate, /href="\/sevak-attendance"[\s\S]*?CalendarCheck2[\s\S]*?Sevak Attendance/);
-  assert.match(attendance, /isAdmin && <AttendanceAdminSidebar \/>/);
-  assert.match(attendance, /function AttendanceAdminSidebar[\s\S]*href: '\/admin'/);
+  assert.match(attendance, /pathname=\{view === 'profiles' \? '\/sevak-attendance\/profiles' : '\/sevak-attendance\/administration'\}/);
+  assert.match(attendanceLayout, /label: 'Dashboard', href: '\/admin'/);
+  assert.match(attendanceLayout, /aria-current=\{active \? 'page' : undefined\}/);
   assert.match(app, /'\/sevak-attendance'/);
   assert.match(app, /const protectedPaths = \[[^\]]*'\/sevak-attendance'/);
 });
