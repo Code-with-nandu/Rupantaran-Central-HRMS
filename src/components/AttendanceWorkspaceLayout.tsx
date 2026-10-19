@@ -11,7 +11,7 @@ interface Props {
 }
 
 const links = [
-  { label: 'Dashboard', href: '/admin', icon: LayoutDashboard, group: 'Main' },
+  { label: 'Dashboard', href: '/sevak-attendance/dashboard', icon: LayoutDashboard, group: 'Main' },
   { label: 'Attendance workspace', href: '/sevak-attendance', icon: ClipboardList, group: 'Workspace' },
   { label: 'Sevak Profiles', href: '/sevak-attendance/profiles', icon: UserRoundCheck, group: 'Manage' },
   { label: 'Attendance', href: '/sevak-attendance/manual', icon: CalendarCheck2, group: 'Manage' },

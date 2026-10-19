@@ -90,7 +90,7 @@ export default function App() {
     return <SevakDashboard pathname={pathname} />;
   }
 
-  const protectedPaths = ['/dashboard', '/role-redirect', '/sevak/panel', '/group-leader', '/admin', '/register-problem', '/my-problems', '/profile', '/notifications', '/sevak-dashboard/leave', '/sevak-dashboard/medical', '/sevak-dashboard/attendance', '/sevak-attendance', '/sevak-attendance/reports', '/sevak-attendance/manual', '/sevak-attendance/profiles', '/sevak-attendance/administration'];
+  const protectedPaths = ['/dashboard', '/role-redirect', '/sevak/panel', '/group-leader', '/admin', '/register-problem', '/my-problems', '/profile', '/notifications', '/sevak-dashboard/leave', '/sevak-dashboard/medical', '/sevak-dashboard/attendance', '/sevak-attendance', '/sevak-attendance/dashboard', '/sevak-attendance/reports', '/sevak-attendance/manual', '/sevak-attendance/profiles', '/sevak-attendance/administration'];
   if (protectedPaths.includes(pathname)) {
     return (
       <>
@@ -107,6 +107,8 @@ export default function App() {
                 ? <RoleDashboardGate session={session} requestedRole="group_leader"><GroupLeaderDashboard session={session} /></RoleDashboardGate>
               : pathname === '/sevak-dashboard/attendance'
                 ? <RoleDashboardGate session={session} requestedRole="sevak"><SevakAttendanceDashboardPage session={session} /></RoleDashboardGate>
+              : pathname === '/sevak-attendance/dashboard'
+                ? <RoleDashboardGate session={session} requestedRole="attendance"><SevakAttendanceDashboardPage session={session} overview /></RoleDashboardGate>
               : pathname === '/sevak-attendance'
                 ? <RoleDashboardGate session={session} requestedRole="attendance">{window.location.hash === '#attendance-heading' ? <SevakManualAttendancePage shellSession={session} /> : window.location.hash === '#monthly-attendance-heading' ? <SevakAttendanceDashboardPage session={session} workspace /> : <SevakAttendanceWorkspacePage session={session} />}</RoleDashboardGate>
               : pathname === '/sevak-attendance/reports'

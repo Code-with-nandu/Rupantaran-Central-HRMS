@@ -70,7 +70,7 @@ function dateLabel(start: string, end: string) {
   return start === end ? format(start) : `${format(start)} – ${format(end)}`;
 }
 
-export default function SevakAttendanceDashboardPage({ session, workspace = false }: { session: Session; workspace?: boolean }) {
+export default function SevakAttendanceDashboardPage({ session, workspace = false, overview = false }: { session: Session; workspace?: boolean; overview?: boolean }) {
   const today = todayIndia();
   const [period, setPeriod] = useState<Period>('monthly');
   const [customFrom, setCustomFrom] = useState(`${today.slice(0, 7)}-01`);
@@ -188,6 +188,29 @@ export default function SevakAttendanceDashboardPage({ session, workspace = fals
       && ((new Date(`${record.attendance_date}T00:00:00Z`).getUTCDay() + 6) % 7) === index).length,
   }));
   const maxAbsences = Math.max(1, ...weekdayAbsences.map((day) => day.count));
+
+  if (overview) return <SevakLayout session={session} pathname="/sevak-attendance/dashboard">
+    <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-800 sm:px-8 sm:py-12">
+      <div className="mx-auto max-w-7xl space-y-6">
+        <header className="flex flex-wrap items-end justify-between gap-4">
+          <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Central HRMS · Attendance</p><h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#101c32]">Attendance Dashboard</h1><p className="mt-2 text-sm text-slate-500">Monthly overview · {rangeText}</p></div>
+          <a href="/sevak-attendance/reports" className="rounded-lg bg-[#101c32] px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-700">Open detailed reports</a>
+        </header>
+        {error && <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
+        <section aria-label="Monthly attendance summary" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <Metric icon={<Users size={18}/>} label="Total Sevaks" value={loadingProfiles ? '…' : visibleProfiles.length.toLocaleString('en-IN')} note="Approved active profiles in your scope" />
+          <Metric icon={<UserCheck size={18}/>} label="Present" value={loadingAttendance ? '…' : presentCount.toLocaleString('en-IN')} note="Distinct Sevaks with present records" tone="green" />
+          <Metric icon={<UserX size={18}/>} label="Absent" value={loadingAttendance ? '…' : absentCount.toLocaleString('en-IN')} note="Recorded absences only" tone="red" />
+          <Metric icon={<Activity size={18}/>} label="Attendance Percentage" value={loadingAttendance ? '…' : `${attendancePercentage}%`} note="Of recorded attendance sessions" tone="green" />
+        </section>
+        <section className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,1fr)]">
+          <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><h2 className="font-semibold text-[#101c32]">Monthly attendance trend</h2><p className="mt-1 text-xs text-slate-500">Recorded present and absent sessions · {rangeText}</p>{loadingAttendance ? <p className="mt-5 text-sm text-slate-500">Loading attendance…</p> : dailyTrend.length ? <div className="mt-4 overflow-x-auto"><svg role="img" aria-label="Monthly attendance trend" viewBox="0 0 720 205" className="h-56 min-w-[480px] w-full"><line x1="38" y1="166" x2="682" y2="166" stroke="#cbd5e1"/><line x1="38" y1="98" x2="682" y2="98" stroke="#e2e8f0"/><polyline fill="none" stroke="#10b981" strokeWidth="3" points={dailyTrend.map((day,index)=>trendPoint(index,day.present)).join(' ')}/><polyline fill="none" stroke="#f87171" strokeWidth="3" points={dailyTrend.map((day,index)=>trendPoint(index,day.absent)).join(' ')}/>{dailyTrend.map((day,index)=><g key={day.date}><circle cx={trendPoint(index,day.present).split(',')[0]} cy={trendPoint(index,day.present).split(',')[1]} r="3" fill="#10b981"><title>{day.date}: {day.present} present</title></circle><circle cx={trendPoint(index,day.absent).split(',')[0]} cy={trendPoint(index,day.absent).split(',')[1]} r="3" fill="#f87171"><title>{day.date}: {day.absent} absent</title></circle></g>)}</svg></div> : <p className="mt-5 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">No attendance records this month. Missing records are not counted as absences.</p>}<div className="mt-3 flex gap-4 text-xs"><span className="text-emerald-700">Present records</span><span className="text-rose-600">Absent records</span></div></article>
+          <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><h2 className="font-semibold text-[#101c32]">Attendance by department</h2><p className="mt-1 text-xs text-slate-500">Recorded sessions this month</p><div className="mt-5 space-y-4">{departmentTotals.length ? departmentTotals.map((department)=><div key={department.id}><div className="mb-1 flex justify-between gap-3 text-xs"><span className="truncate text-slate-600">{department.name}</span><span className="shrink-0 text-slate-500">P {department.present} · A {department.absent}</span></div><div className="flex h-2 overflow-hidden rounded-full bg-slate-100"><span className="bg-emerald-500" style={{width:`${department.present/maxDepartment*100}%`}}/><span className="bg-rose-400" style={{width:`${department.absent/maxDepartment*100}%`}}/></div></div>) : <p className="text-sm text-slate-500">No department totals are available.</p>}</div><a href="/sevak-attendance/reports" className="mt-6 inline-flex text-sm font-semibold text-emerald-800 hover:text-emerald-900">View all report details →</a></article>
+        </section>
+        <section aria-label="Attendance actions" className="grid gap-3 sm:grid-cols-2"><a href="/sevak-attendance/manual" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-emerald-300"><span className="text-sm font-semibold text-[#101c32]">Manual attendance</span><span className="mt-1 block text-sm text-slate-500">Record attendance or correct saved entries.</span></a><a href="/sevak-attendance/profiles" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-emerald-300"><span className="text-sm font-semibold text-[#101c32]">Sevak profiles</span><span className="mt-1 block text-sm text-slate-500">Search authorized profiles and review details.</span></a></section>
+      </div>
+    </main>
+  </SevakLayout>;
 
   return (
     <SevakLayout session={session} pathname={workspace ? '/sevak-attendance/reports' : '/sevak-dashboard/attendance'}>

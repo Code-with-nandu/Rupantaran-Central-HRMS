@@ -112,7 +112,7 @@ test('Admin navigation links to attendance and back while attendance remains pro
   assert.match(gate, /href="\/admin"[\s\S]*?Admin Dashboard/);
   assert.match(gate, /href="\/sevak-attendance"[\s\S]*?CalendarCheck2[\s\S]*?Sevak Attendance/);
   assert.match(attendance, /pathname=\{view === 'profiles' \? '\/sevak-attendance\/profiles' : '\/sevak-attendance\/administration'\}/);
-  assert.match(attendanceLayout, /label: 'Dashboard', href: '\/admin'/);
+  assert.match(attendanceLayout, /label: 'Dashboard', href: '\/sevak-attendance\/dashboard'/);
   assert.match(attendanceLayout, /aria-current=\{active \? 'page' : undefined\}/);
   assert.match(app, /'\/sevak-attendance'/);
   assert.match(app, /const protectedPaths = \[[^\]]*'\/sevak-attendance'/);

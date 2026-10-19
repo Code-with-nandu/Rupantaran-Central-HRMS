@@ -40,11 +40,11 @@ test('admin preview remains hidden from non-admin attendance users', () => {
 test('all attendance pages share one responsive navy sidebar with route-aware navigation', () => {
   assert.match(layout, /lg:grid-cols-\[260px_minmax\(0,1fr\)\]/);
   assert.match(layout, /bg-\[#101c32\]/);
-  for (const [label, path] of [['Dashboard', '/admin'], ['Attendance workspace', '/sevak-attendance'], ['Sevak Profiles', '/sevak-attendance/profiles'], ['Attendance', '/sevak-attendance/manual'], ['Department & Team Management', '/sevak-attendance/administration'], ['Reports', '/sevak-attendance/reports']]) {
+  for (const [label, path] of [['Dashboard', '/sevak-attendance/dashboard'], ['Attendance workspace', '/sevak-attendance'], ['Sevak Profiles', '/sevak-attendance/profiles'], ['Attendance', '/sevak-attendance/manual'], ['Department & Team Management', '/sevak-attendance/administration'], ['Reports', '/sevak-attendance/reports']]) {
     assert.match(layout, new RegExp(`label: '${label}', href: '${path.replaceAll('/', '\\/')}'`));
   }
   assert.match(layout, /aria-current=\{active \? 'page' : undefined\}/);
   assert.match(layout, /aria-label=\{menuOpen \? 'Close attendance menu' : 'Open attendance menu'\}/);
   assert.match(shell, /pathname\.startsWith\('\/sevak-attendance'\)[\s\S]*?<AttendanceWorkspaceLayout session=\{session\} pathname=\{pathname\}/);
-  for (const route of ['/sevak-attendance', '/sevak-attendance/reports', '/sevak-attendance/manual', '/sevak-attendance/profiles', '/sevak-attendance/administration']) assert.ok(layout.includes(route));
+  for (const route of ['/sevak-attendance', '/sevak-attendance/dashboard', '/sevak-attendance/reports', '/sevak-attendance/manual', '/sevak-attendance/profiles', '/sevak-attendance/administration']) assert.ok(layout.includes(route));
 });
